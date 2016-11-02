@@ -33,7 +33,7 @@
 =cut
 
 # Magic markers
-#%# family=auto
+#%# family=contrib
 #%# capabilities=autoconf
 
 . $MUNIN_LIBDIR/plugins/plugin.sh
