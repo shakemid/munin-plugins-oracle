@@ -143,7 +143,6 @@ config() {
 }
 
 getvalue() {
-
     i=0
     for field in ${fields[@]}
     do

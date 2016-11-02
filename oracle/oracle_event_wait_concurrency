@@ -155,7 +155,6 @@ config() {
 }
 
 getvalue() {
-
     i=0
     for field in ${fields[@]}
     do
@@ -164,7 +163,12 @@ set pagesize 0
 set linesize 256
 set numwidth 30
 set feedback off
-select '${field}.value ' || time_waited_micro from v\$system_event where event = '${labels[$i]}';
+SELECT
+  '${field}.value ' || time_waited_micro
+FROM
+  v\$system_event
+WHERE
+  event = '${labels[$i]}';
 EOF
         i=$((i+1))
     done
