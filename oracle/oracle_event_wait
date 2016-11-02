@@ -22,6 +22,11 @@
   Uses the command "sqlplus".
   Tested with Oracle Database 12c R1.
 
+  It may looks wierd that Y-axis indicates "microseconds per second".  Although
+  number of times of wait event looks easier to understand, in many cases the 
+  number of events does not matter, but wait time become more important to 
+  analyze bottle necks.
+
 =head1 AUTHOR
 
   K.Cima https://github.com/shakemid
