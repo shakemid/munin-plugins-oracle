@@ -53,10 +53,12 @@ fields=(
     wait_cursor_mutex_X
     wait_cursor_pin_S
     wait_cursor_pin_S_wait_on_X
-    wait_enq_TX__index_contention
+    wait_cursor_pin_X
+    wait_enq_TX_index_contention
     wait_latch_cache_buffers_chains
     wait_latch_row_cache_objects
     wait_latch_shared_pool
+    wait_LCK0_row_cache_object_free
     wait_libcache_interrupt_action_by_LCK
     wait_library_cache_load_lock
     wait_library_cache_lock
@@ -66,16 +68,20 @@ fields=(
     wait_row_cache_lock
 )
 
+# memo: select event from v$system_event where wait_class = 'Concurrency' order by event;
+
 labels=(
     'buffer busy waits'
     'cursor: mutex S'
     'cursor: mutex X'
     'cursor: pin S'
     'cursor: pin S wait on X'
+    'cursor: pin X'
     'enq: TX - index contention'
     'latch: cache buffers chains'
     'latch: row cache objects'
     'latch: shared pool'
+    'LCK0 row cache object free'
     'libcache interrupt action by LCK'
     'library cache load lock'
     'library cache lock'
@@ -102,9 +108,13 @@ types=(
     DERIVE
     DERIVE
     DERIVE
+    DERIVE
+    DERIVE
 )
 
 draws=(
+    LINE
+    LINE
     LINE
     LINE
     LINE

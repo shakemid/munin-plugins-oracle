@@ -65,6 +65,8 @@ fields=(
     wait_other
 )
 
+# memo: select wait_class from v$system_event group by wait_class;
+
 labels=(
     'Application'
     'Network'

@@ -52,14 +52,18 @@ fields=(
     wait_enq_ko_fast_object_checkpoint
     wait_enq_tm_contention
     wait_enq_tx_row_lock_contention
+    wait_enq_ul_contention
     wait_sqlnet_break_reset_to_client
 )
+
+# memo: select event from v$system_event where wait_class = 'Application' order by event;
 
 labels=(
     'enq: RO - fast object reuse'
     'enq: KO - fast object checkpoint'
     'enq: TM - contention'
     'enq: TX - row lock contention'
+    'enq: UL - contention'
     'SQL*Net break/reset to client'
 )
 
@@ -69,9 +73,11 @@ types=(
     DERIVE
     DERIVE
     DERIVE
+    DERIVE
 )
 
 draws=(
+    LINE
     LINE
     LINE
     LINE

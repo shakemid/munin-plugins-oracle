@@ -66,6 +66,8 @@ fields=(
     wait_external_table_open
 )
 
+# memo: select event from v$system_event where wait_class = 'User I/O' order by event;
+
 labels=(
     'Parameter File I/O'
     'Disk file operations I/O'
