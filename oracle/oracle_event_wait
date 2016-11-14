@@ -52,60 +52,45 @@ PATH=$PATH:$ORACLE_HOME/bin
 export PATH ORACLE_HOME ORACLE_SID
 
 # Graph settings
-fields=(
-    wait_application
-    wait_network
-    wait_commit
-    wait_concurrency
-    wait_scheduler
-    wait_configuration
-    wait_cluster
-    wait_user_io
-    wait_system_io
-    wait_other
+fields=()
+labels=() 
+types=()
+draws=()
+type_default=DERIVE
+draw_default=LINE
+
+clean_fieldname2() {
+    local temp=$( echo "$@" | tr '[A-Z]' '[a-z]' | sed -e 's/[^A-Za-z0-9_ ]//g' )
+    echo $( clean_fieldname "$temp" )
+}
+
+getfield() {
+    local line
+    while read line
+    do
+        fields+=( wait_$( clean_fieldname2 $line ) )
+        labels+=( "$line" )
+        types+=( $type_default )
+        draws+=( $draw_default )
+    done < <( sqlplus -s ${oracle_auth} <<EOF | grep -v '^$'
+set pagesize 0
+set linesize 256
+set numwidth 30
+set feedback off
+SELECT 
+  wait_class
+FROM
+  v\$event_name
+WHERE
+  wait_class != 'Idle'
+GROUP BY
+  wait_class
+ORDER BY
+  wait_class;
+EOF
 )
 
-# memo: select wait_class from v$system_event group by wait_class;
-
-labels=(
-    'Application'
-    'Network'
-    'Commit'
-    'Concurrency'
-    'Scheduler'
-    'Configuration'
-    'Cluster'
-    'User I/O'
-    'System I/O'
-    'Other'
-)
-
-types=(
-    DERIVE
-    DERIVE
-    DERIVE
-    DERIVE
-    DERIVE
-    DERIVE
-    DERIVE
-    DERIVE
-    DERIVE
-    DERIVE
-)
-
-draws=(
-    LINE
-    LINE
-    LINE
-    LINE
-    LINE
-    LINE
-    LINE
-    LINE
-    LINE
-    LINE
-)
-
+}
 
 autoconf() {
     if [ -x $( which sqlplus ) ]; then
@@ -125,7 +110,8 @@ config() {
     #echo graph_scale no
     echo graph_order ${fields[@]}
 
-    i=0
+    local i=0
+    local field
     for field in ${fields[@]}
     do
         echo ${field}.label ${labels[$i]}
@@ -138,7 +124,8 @@ config() {
 }
 
 getvalue() {
-    i=0
+    local i=0
+    local field
     for field in ${fields[@]}
     do
         sqlplus -s ${oracle_auth} <<EOF | grep -v '^$'
@@ -159,14 +146,17 @@ EOF
     exit 0
 }
 
+# main
 case $1 in
 autoconf)
     autoconf
     ;;
 config)
+    getfield
     config
     ;;
 *)
+    getfield
     getvalue
     ;;
 esac
