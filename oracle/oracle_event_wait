@@ -60,7 +60,7 @@ type_default=DERIVE
 draw_default=LINE
 
 clean_fieldname2() {
-    local temp=$( echo "$@" | tr '[A-Z]' '[a-z]' | sed -e 's/[^A-Za-z0-9_ ]//g' )
+    local temp=$( echo "$@" | tr '[A-Z]' '[a-z]' | sed -e 's/[^a-z0-9_ ]//g' )
     echo $( clean_fieldname "$temp" )
 }
 
