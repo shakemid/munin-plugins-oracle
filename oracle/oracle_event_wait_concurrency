@@ -49,21 +49,21 @@ export PATH ORACLE_HOME ORACLE_SID
 # Graph settings
 fields=(
     wait_buffer_busy_waits
-    wait_cursor_mutex_S
-    wait_cursor_mutex_X
-    wait_cursor_pin_S
-    wait_cursor_pin_S_wait_on_X
-    wait_cursor_pin_X
-    wait_enq_TX_index_contention
+    wait_cursor_mutex_s
+    wait_cursor_mutex_x
+    wait_cursor_pin_s
+    wait_cursor_pin_s_wait_on_x
+    wait_cursor_pin_x
+    wait_enq_tx_index_contention
     wait_latch_cache_buffers_chains
     wait_latch_row_cache_objects
     wait_latch_shared_pool
-    wait_LCK0_row_cache_object_free
-    wait_libcache_interrupt_action_by_LCK
+    wait_lck0_row_cache_object_free
+    wait_libcache_interrupt_action_by_lck
     wait_library_cache_load_lock
     wait_library_cache_lock
     wait_library_cache_pin
-    wait_library_cache_mutex_X
+    wait_library_cache_mutex_x
     wait_resmgr_internal_state_change
     wait_row_cache_lock
 )
