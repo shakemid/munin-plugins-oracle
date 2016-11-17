@@ -49,19 +49,19 @@ export PATH ORACLE_HOME ORACLE_SID
 # Graph settings
 fields=(
     physical_read_total
-    physical_write_total
     physical_read
-    physical_write
     physical_read_total_multi
+    physical_write_total
+    physical_write
     physical_write_total_multi
 )
 
 labels=(
     "physical read total IO requests"
-    "physical write total IO requests"
     "physical read IO requests"
-    "physical write IO requests"
     "physical read total multi block requests"
+    "physical write total IO requests"
+    "physical write IO requests"
     "physical write total multi block requests"
 )
 
@@ -76,9 +76,9 @@ types=(
 
 draws=(
     LINE2
+    LINE
+    LINE
     LINE2
-    LINE
-    LINE
     LINE
     LINE
 )

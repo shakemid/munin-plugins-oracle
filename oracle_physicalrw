@@ -49,15 +49,15 @@ export PATH ORACLE_HOME ORACLE_SID
 # Graph settings
 fields=(
     physical_read_total
-    physical_write_total
     physical_read
+    physical_write_total
     physical_write
 )
 
 labels=(
     "physical read total bytes"
-    "physical write total bytes"
     "physical read bytes"
+    "physical write total bytes"
     "physical write bytes"
 )
 
@@ -70,8 +70,8 @@ types=(
 
 draws=(
     LINE2
-    LINE2
     LINE
+    LINE2
     LINE
 )
 
