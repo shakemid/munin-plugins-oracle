@@ -2,7 +2,7 @@ Munin Plugins for Oracle
 ====
 
 #Sample Images
-![](./tree/images/examples/oracle_cursor-week.png)
+![](https://github.com/shakemid/munin-plugins-oracle/blob/images/examples/oracle_cursor-week.png)
 
 #Links
 - Munin: http://munin-monitoring.org/
