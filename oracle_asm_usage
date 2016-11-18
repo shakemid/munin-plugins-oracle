@@ -11,7 +11,7 @@
 
   The following shows example settings for this plugin:
 
-  [oracle_*]
+  [oracle_asm_*]
      user  grid
      env.oracle_auth  / as SYSASM
      env.ORACLE_HOME  /path/to/grid/home/version
