@@ -59,34 +59,6 @@ clean_fieldname2() {
     echo $( clean_fieldname "$temp" )
 }
 
-getfield() {
-    local line
-    while read line
-    do
-        fields+=( wait_$( clean_fieldname2 $line ) )
-        labels+=( "$line" )
-        types+=( $type_default )
-        draws+=( $draw_default )
-    done < <( sqlplus -s ${oracle_auth} <<EOF | grep -v '^$'; echo Other; echo Idle;
-set pagesize 0
-set linesize 256
-set numwidth 30
-set feedback off
-SELECT
-  wait_class
-FROM
-  v\$event_name
-WHERE
-  wait_class NOT IN ( 'Other', 'Idle' )
-GROUP BY
-  wait_class
-ORDER BY
-  wait_class;
-EOF
-)
-
-}
-
 autoconf() {
     if [ -x $( which sqlplus ) ]; then
         echo yes
@@ -115,6 +87,34 @@ config() {
     done
  
     exit 0
+}
+
+getfield() {
+    local line
+    while read line
+    do
+        fields+=( wait_$( clean_fieldname2 $line ) )
+        labels+=( "$line" )
+        types+=( $type_default )
+        draws+=( $draw_default )
+    done < <( sqlplus -s ${oracle_auth} <<EOF | grep -v '^$'; echo Other; echo Idle;
+set pagesize 0
+set linesize 256
+set numwidth 30
+set feedback off
+SELECT
+  wait_class
+FROM
+  v\$event_name
+WHERE
+  wait_class NOT IN ( 'Other', 'Idle' )
+GROUP BY
+  wait_class
+ORDER BY
+  wait_class;
+EOF
+)
+
 }
 
 getvalue() {
