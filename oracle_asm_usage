@@ -41,7 +41,7 @@
 # Environments
 : ${oracle_auth:=/ as SYSASM}
 : ${ORACLE_SID:=+ASM}
-: ${ORACLE_HOME:=/opt/grid/home/*}
+: ${ORACLE_HOME:=$( echo /opt/grid/home/* )}
 
 PATH=$PATH:$ORACLE_HOME/bin
 export PATH ORACLE_HOME ORACLE_SID

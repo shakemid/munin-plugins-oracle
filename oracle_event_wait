@@ -46,7 +46,7 @@
 # Environments
 : ${oracle_auth:=/ as SYSDBA}
 : ${ORACLE_SID:=orcl}
-: ${ORACLE_HOME:=/opt/oracle/product/*}
+: ${ORACLE_HOME:=$( echo /opt/oracle/product/* )}
 
 PATH=$PATH:$ORACLE_HOME/bin
 export PATH ORACLE_HOME ORACLE_SID
