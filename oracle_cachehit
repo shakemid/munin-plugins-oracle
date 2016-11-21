@@ -88,7 +88,9 @@ SELECT
     ( SUM( DECODE( name, 'consistent gets', value, 0) ) +
       SUM( DECODE( name, 'db block gets', value, 0 ) ) ) ) ) * 100 )
 FROM
-  v\$sysstat;
+  v\$sysstat
+WHERE
+  name IN ( 'physical reads', 'db block gets', 'consistent gets' );
 EOF
 
     sqlplus -s ${oracle_auth} <<EOF | grep -v '^$'
