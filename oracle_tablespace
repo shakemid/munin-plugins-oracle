@@ -103,7 +103,7 @@ set linesize 256
 set numwidth 30
 set feedback off
 SELECT
-   tablespace_name
+   regexp_replace( tablespace_name, '[^A-Za-z0-9_]', '_' )
 FROM
    dba_data_files
 ORDER BY
@@ -120,7 +120,8 @@ set feedback off
 set linesize 256
 set numwidth 30
 SELECT
-  tablespace_name || '.value ' || round( (total_bytes - free_total_bytes) / total_bytes * 100, 0 )
+  regexp_replace( tablespace_name, '[^A-Za-z0-9_]', '_' ) || '.value ' || 
+  round( (total_bytes - free_total_bytes) / total_bytes * 100, 0 )
 FROM
   ( SELECT
       tablespace_name,

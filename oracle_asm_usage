@@ -103,7 +103,7 @@ set linesize 256
 set numwidth 30
 set feedback off
 SELECT
-   name
+   regexp_replace( name, '[^A-Za-z0-9_]', '_' )
 FROM
    v\$asm_diskgroup 
 ORDER BY
@@ -120,7 +120,7 @@ set feedback off
 set linesize 256
 set numwidth 30
 SELECT
-   name || '.value ' || round( ( total_mb - free_mb ) / total_mb * 100 )  
+   regexp_replace( name, '[^A-Za-z0-9_]', '_' ) || '.value ' || round( ( total_mb - free_mb ) / total_mb * 100 )  
 FROM
    v\$asm_diskgroup 
 ORDER BY
