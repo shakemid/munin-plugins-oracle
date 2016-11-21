@@ -84,9 +84,9 @@ set pagesize 0
 set linesize 256
 set numwidth 30
 SELECT
-   'buf_hitratio.value ' || round( ( 1 - ( SUM( DECODE( name, 'physical reads cache', value, 0 ) ) /
-    ( SUM( DECODE( name, 'consistent gets from cache', value, 0) ) +
-      SUM( DECODE( name, 'db block gets from cache', value, 0 ) ) ) ) ) * 100 )
+   'buf_hitratio.value ' || round( ( 1 - ( SUM( DECODE( name, 'physical reads', value, 0 ) ) /
+    ( SUM( DECODE( name, 'consistent gets', value, 0) ) +
+      SUM( DECODE( name, 'db block gets', value, 0 ) ) ) ) ) * 100 )
 FROM
   v\$sysstat;
 EOF
