@@ -18,7 +18,7 @@ Munin Plugins for Oracle
 #Links
 - Munin: http://munin-monitoring.org/
 
-#Auther
+#Author
 K.Cima https://github.com/shakemid
 
 #License
