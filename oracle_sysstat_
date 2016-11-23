@@ -1,0 +1,294 @@
+#!/usr/bin/env bash
+# -*- sh -*-
+
+: << =cut
+
+=head1 NAME
+
+  oracle_sysstat_ - Munin plugin to monitor Oracle Statistics
+
+  oracle_sysstat_cursor       - Munin plugin to monitor Oracle Cursor
+  oracle_sysstat_execute      - Munin plugin to monitor Oracle Execute Count
+  oracle_sysstat_parse        - Munin plugin to monitor Oracle Parse Count
+  oracle_sysstat_physicaliops - Munin plugin to monitor Oracle Physical I/O Requests
+  oracle_sysstat_physicalrw   - Munin plugin to monitor Oracle Physical Read/Write
+  oracle_sysstat_sort         - Munin plugin to monitor Oracle Sorts
+  oracle_sysstat_tablescan    - Munin plugin to monitor Oracle Table Scans
+  oracle_sysstat_transaction  - Munin plugin to monitor Oracle Transactions
+
+=head1 CONFIGURATION
+
+  To get a list of symlinks that can be created, run:   
+
+    ./oracle_sysstat_ suggest
+
+  Make symlinks:
+
+    munin-node-configure --families=contrib --suggest --shell
+    ...
+
+  The following shows example settings for this plugin:
+
+  [oracle_*]
+    user  oracle
+    env.oracle_auth  / as SYSDBA
+    env.ORACLE_HOME  /path/to/oracle/product/version
+    env.ORACLE_SID   SOMESID
+
+=head1 NOTES
+
+  Uses the command "sqlplus".
+  Tested with Oracle Database 12c R1.
+
+=head1 AUTHOR
+
+  K.Cima https://github.com/shakemid
+
+=head1 LICENSE
+
+  GPLv2
+
+=cut
+
+# Magic markers
+#%# family=contrib
+#%# capabilities=autoconf suggest
+
+. $MUNIN_LIBDIR/plugins/plugin.sh
+
+# Environments
+: ${oracle_auth:=/ as SYSDBA}
+: ${ORACLE_SID:=orcl}
+: ${ORACLE_HOME:=$( echo /opt/oracle/product/* )}
+
+PATH=$PATH:$ORACLE_HOME/bin
+export PATH ORACLE_HOME ORACLE_SID
+
+# Module name
+module=$( basename $0 | sed -e 's/^.*_//' )
+
+# Graph settings
+declare -A global_attrs
+declare -A data_attrs  # field type draw 'label'
+
+## cursor
+global_attrs['cursor']=$( cat <<'EOF'
+    graph_title Oracle Open Cursors
+    graph_category Oracle
+    graph_args --base 1000 --lower-limit 0 --rigid
+    graph_vlabel Count
+    graph_info Oracle Open Cursors
+EOF
+)
+data_attrs['cursor']=$( cat <<'EOF'
+    open_cursor GAUGE LINE 'Open Cursors'
+EOF
+)
+
+## execute
+global_attrs['execute']=$( cat <<'EOF'
+    graph_title Oracle Execute Count
+    graph_category Oracle
+    graph_args --base 1000 --lower-limit 0 --rigid
+    graph_vlabel Count
+    graph_info Oracle Execute Count
+EOF
+)
+data_attrs['execute']=$( cat <<'EOF'
+    execute_count    DERIVE LINE 'execute count'
+    user_calls       DERIVE LINE 'user calls'
+    recursive_calls  DERIVE LINE 'recursive calls'
+EOF
+)
+
+## parse
+global_attrs['parse']=$( cat <<'EOF'
+    graph_title Oracle Parse Count
+    graph_category Oracle
+    graph_args --base 1000 --lower-limit 0 --rigid
+    graph_vlabel Count
+    graph_info Oracle Parse Count
+EOF
+)
+data_attrs['parse']=$( cat <<'EOF'
+    user_calls            DERIVE LINE 'user calls'
+    parse_count_total     DERIVE LINE 'parse count (total)'
+    parse_count_hard      DERIVE LINE 'parse count (hard)'
+    parse_count_failures  DERIVE LINE 'parse count (failures)'
+    parse_count_describe  DERIVE LINE 'parse count (describe)'
+EOF
+)
+
+## phisicaliops
+global_attrs['physicaliops']=$( cat <<'EOF'
+    graph_title Oracle Physical I/O Requests
+    graph_category Oracle
+    graph_args --base 1000 --lower-limit 0 --rigid
+    graph_vlabel iops
+    graph_info Oracle Physical I/O Requests
+EOF
+)
+data_attrs['physicaliops']=$( cat <<'EOF'
+    physical_read_total        DERIVE LINE2 'physical read total IO requests'
+    physical_read              DERIVE LINE  'physical read IO requests'
+    physical_read_total_multi  DERIVE LINE  'physical read total multi block requests'
+    physical_write_total       DERIVE LINE2 'physical write total IO requests'
+    physical_write             DERIVE LINE  'physical write IO requests'
+    physical_write_total_multi DERIVE LINE  'physical write total multi block requests'
+EOF
+)
+
+## physicalrw
+global_attrs['physicalrw']=$( cat <<'EOF'
+    graph_title Oracle Physical Read/Write
+    graph_category Oracle
+    graph_args --base 1024 --lower-limit 0 --rigid
+    graph_vlabel Bytes per second
+    graph_info Oracle Physical Read/Write
+EOF
+)
+data_attrs['physicalrw']=$( cat <<'EOF'
+    physical_read_total  DERIVE LINE2 'physical read total bytes'
+    physical_read        DERIVE LINE  'physical read bytes'
+    physical_write_total DERIVE LINE2 'physical write total bytes'
+    physical_write       DERIVE LINE  'physical write bytes'
+EOF
+)
+
+## sort
+global_attrs['sort']=$( cat <<'EOF'
+    graph_title Oracle Sorts
+    graph_category Oracle
+    graph_args --base 1000 --lower-limit 0 --rigid
+    graph_vlabel Count
+    graph_info Oracle Sorts
+EOF
+)
+data_attrs['sort']=$( cat <<'EOF'
+    sorts_memory DERIVE LINE 'sorts (memory)'
+    sorts_disk   DERIVE LINE 'sorts (disk)'
+EOF
+)
+
+## tablescan
+global_attrs['tablescan']=$( cat <<'EOF'
+    graph_title Oracle Table Scans
+    graph_category Oracle
+    graph_args --base 1000 --lower-limit 0 --rigid
+    graph_vlabel Count
+    graph_info Oracle Table Scans
+EOF
+)
+data_attrs['tablescan']=$( cat <<'EOF'
+    table_scans_short_tables DERIVE LINE 'table scans (short tables)'
+    table_scans_long_tables  DERIVE LINE 'table scans (long tables)'
+EOF
+)
+
+## transaction
+global_attrs['transaction']=$( cat <<'EOF'
+    graph_title Oracle Transactions
+    graph_category Oracle
+    graph_args --base 1000 --lower-limit 0 --rigid
+    graph_vlabel Count per second
+    graph_info Oracle Transactions
+EOF
+)
+data_attrs['transaction']=$( cat <<'EOF'
+    user_commits   DERIVE LINE 'user commits'
+    user_rollbacks DERIVE LINE 'user rollbacks'
+EOF
+)
+
+# End of Graph Settings
+
+autoconf() {
+    if [ -x "$( which sqlplus )" ]; then
+        echo yes
+    else
+        echo "no (failed to find executable 'sqlplus')"
+    fi
+    exit 0
+}
+
+suggest() {
+    local i
+    for i in ${!global_attrs[@]}
+    do
+        echo $i
+    done
+
+    exit 0
+}
+
+config() {
+    cat <<EOF | sed -e 's/^  *//'
+${global_attrs[$module]}
+EOF
+
+    local data_attr t fields field type draw label
+    while read data_attr
+    do
+        eval t=( "${data_attr}" )
+        field="${t[0]}"
+        fields+=( $field )
+        type="${t[1]}"
+        draw="${t[2]}"
+        label="${t[3]}"
+
+        echo ${field}.type  ${type}
+        echo ${field}.draw  ${draw}
+        echo ${field}.label ${label}
+    done < <( cat <<EOF
+${data_attrs[$module]}
+EOF
+)
+
+    echo graph_order ${fields[@]}
+
+    exit 0
+}
+
+getvalue() {
+    local data_attr t field label
+    while read data_attr
+    do
+        eval t=( "${data_attr}" )
+        field="${t[0]}"
+        label="${t[3]}"
+
+        sqlplus -s "${oracle_auth}" <<EOF | grep -v '^$'
+set pagesize 0
+set feedback off
+set linesize 256
+set numwidth 30
+SELECT
+  '${field}.value ' || value
+FROM
+  v\$sysstat
+WHERE
+  name = '${label}';
+EOF
+    done < <( cat <<EOF
+${data_attrs[$module]}
+EOF
+)
+  
+    exit 0
+}
+
+# main
+case $1 in
+autoconf)
+    autoconf
+    ;;
+suggest)
+    suggest
+    ;;
+config)
+    config
+    ;;
+*)
+    getvalue
+    ;;
+esac
