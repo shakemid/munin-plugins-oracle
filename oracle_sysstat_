@@ -5,16 +5,19 @@
 
 =head1 NAME
 
-  oracle_sysstat_ - Munin plugin to monitor Oracle Statistics
+  oracle_sysstat_* - Munin plugin to monitor Oracle Statistics
 
-  oracle_sysstat_cursor       - Munin plugin to monitor Oracle Cursor
-  oracle_sysstat_execute      - Munin plugin to monitor Oracle Execute Count
-  oracle_sysstat_parse        - Munin plugin to monitor Oracle Parse Count
-  oracle_sysstat_physicaliops - Munin plugin to monitor Oracle Physical I/O Requests
-  oracle_sysstat_physicalrw   - Munin plugin to monitor Oracle Physical Read/Write
-  oracle_sysstat_sort         - Munin plugin to monitor Oracle Sorts
-  oracle_sysstat_tablescan    - Munin plugin to monitor Oracle Table Scans
-  oracle_sysstat_transaction  - Munin plugin to monitor Oracle Transactions
+    cursor       - To monitor Oracle Open Cursor
+    execute      - To monitor Oracle Execute Count
+    parse        - To monitor Oracle Parse Count
+    physicaliops - To monitor Oracle Physical I/O Requests
+    physicalrw   - To monitor Oracle Physical Read/Write
+    sort         - To monitor Oracle Sorts
+    tablescan    - To monitor Oracle Table Scans
+    transaction  - To monitor Oracle Transactions
+    sgainfo      - To monitor Oracle SGA
+    pgastat      - To monitor Oracle PGA
+    cachehit     - To monitor Oracle Cache Hit Ratio
 
 =head1 CONFIGURATION
 
@@ -60,6 +63,7 @@
 : ${oracle_auth:=/ as SYSDBA}
 : ${ORACLE_SID:=orcl}
 : ${ORACLE_HOME:=$( echo /opt/oracle/product/* )}
+: ${sqlplus:=sqlplus}
 
 PATH=$PATH:$ORACLE_HOME/bin
 export PATH ORACLE_HOME ORACLE_SID
@@ -70,9 +74,11 @@ module=$( basename $0 | sed -e 's/^.*_//' )
 # Graph settings
 declare -A global_attrs
 declare -A data_attrs  # field type draw 'label'
+declare -A getfield_func
+declare -A getvalue_func
 
-## cursor
-global_attrs['cursor']=$( cat <<'EOF'
+key=cursor
+global_attrs[$key]=$( cat <<'EOF'
     graph_title Oracle Open Cursors
     graph_category Oracle
     graph_args --base 1000 --lower-limit 0 --rigid
@@ -80,13 +86,14 @@ global_attrs['cursor']=$( cat <<'EOF'
     graph_info Oracle Open Cursors
 EOF
 )
-data_attrs['cursor']=$( cat <<'EOF'
+data_attrs[$key]=$( cat <<'EOF'
     open_cursor GAUGE LINE 'Open Cursors'
 EOF
 )
+getvalue_func[$key]=getvalue_sysstat
 
-## execute
-global_attrs['execute']=$( cat <<'EOF'
+key=execute
+global_attrs[$key]=$( cat <<'EOF'
     graph_title Oracle Execute Count
     graph_category Oracle
     graph_args --base 1000 --lower-limit 0 --rigid
@@ -94,15 +101,16 @@ global_attrs['execute']=$( cat <<'EOF'
     graph_info Oracle Execute Count
 EOF
 )
-data_attrs['execute']=$( cat <<'EOF'
+data_attrs[$key]=$( cat <<'EOF'
     execute_count    DERIVE LINE 'execute count'
     user_calls       DERIVE LINE 'user calls'
     recursive_calls  DERIVE LINE 'recursive calls'
 EOF
 )
+getvalue_func[$key]=getvalue_sysstat
 
-## parse
-global_attrs['parse']=$( cat <<'EOF'
+key=parse
+global_attrs[$key]=$( cat <<'EOF'
     graph_title Oracle Parse Count
     graph_category Oracle
     graph_args --base 1000 --lower-limit 0 --rigid
@@ -110,7 +118,7 @@ global_attrs['parse']=$( cat <<'EOF'
     graph_info Oracle Parse Count
 EOF
 )
-data_attrs['parse']=$( cat <<'EOF'
+data_attrs[$key]=$( cat <<'EOF'
     user_calls            DERIVE LINE 'user calls'
     parse_count_total     DERIVE LINE 'parse count (total)'
     parse_count_hard      DERIVE LINE 'parse count (hard)'
@@ -118,9 +126,10 @@ data_attrs['parse']=$( cat <<'EOF'
     parse_count_describe  DERIVE LINE 'parse count (describe)'
 EOF
 )
+getvalue_func[$key]=getvalue_sysstat
 
-## phisicaliops
-global_attrs['physicaliops']=$( cat <<'EOF'
+key=physicaliops
+global_attrs[$key]=$( cat <<'EOF'
     graph_title Oracle Physical I/O Requests
     graph_category Oracle
     graph_args --base 1000 --lower-limit 0 --rigid
@@ -128,7 +137,7 @@ global_attrs['physicaliops']=$( cat <<'EOF'
     graph_info Oracle Physical I/O Requests
 EOF
 )
-data_attrs['physicaliops']=$( cat <<'EOF'
+data_attrs[$key]=$( cat <<'EOF'
     physical_read_total        DERIVE LINE2 'physical read total IO requests'
     physical_read              DERIVE LINE  'physical read IO requests'
     physical_read_total_multi  DERIVE LINE  'physical read total multi block requests'
@@ -137,9 +146,10 @@ data_attrs['physicaliops']=$( cat <<'EOF'
     physical_write_total_multi DERIVE LINE  'physical write total multi block requests'
 EOF
 )
+getvalue_func[$key]=getvalue_sysstat
 
-## physicalrw
-global_attrs['physicalrw']=$( cat <<'EOF'
+key=physicalrw
+global_attrs[$key]=$( cat <<'EOF'
     graph_title Oracle Physical Read/Write
     graph_category Oracle
     graph_args --base 1024 --lower-limit 0 --rigid
@@ -147,16 +157,17 @@ global_attrs['physicalrw']=$( cat <<'EOF'
     graph_info Oracle Physical Read/Write
 EOF
 )
-data_attrs['physicalrw']=$( cat <<'EOF'
+data_attrs[$key]=$( cat <<'EOF'
     physical_read_total  DERIVE LINE2 'physical read total bytes'
     physical_read        DERIVE LINE  'physical read bytes'
     physical_write_total DERIVE LINE2 'physical write total bytes'
     physical_write       DERIVE LINE  'physical write bytes'
 EOF
 )
+getvalue_func[$key]=getvalue_sysstat
 
-## sort
-global_attrs['sort']=$( cat <<'EOF'
+key=sort
+global_attrs[$key]=$( cat <<'EOF'
     graph_title Oracle Sorts
     graph_category Oracle
     graph_args --base 1000 --lower-limit 0 --rigid
@@ -164,14 +175,15 @@ global_attrs['sort']=$( cat <<'EOF'
     graph_info Oracle Sorts
 EOF
 )
-data_attrs['sort']=$( cat <<'EOF'
+data_attrs[$key]=$( cat <<'EOF'
     sorts_memory DERIVE LINE 'sorts (memory)'
     sorts_disk   DERIVE LINE 'sorts (disk)'
 EOF
 )
+getvalue_func[$key]=getvalue_sysstat
 
-## tablescan
-global_attrs['tablescan']=$( cat <<'EOF'
+key=tablescan
+global_attrs[$key]=$( cat <<'EOF'
     graph_title Oracle Table Scans
     graph_category Oracle
     graph_args --base 1000 --lower-limit 0 --rigid
@@ -179,14 +191,15 @@ global_attrs['tablescan']=$( cat <<'EOF'
     graph_info Oracle Table Scans
 EOF
 )
-data_attrs['tablescan']=$( cat <<'EOF'
+data_attrs[$key]=$( cat <<'EOF'
     table_scans_short_tables DERIVE LINE 'table scans (short tables)'
     table_scans_long_tables  DERIVE LINE 'table scans (long tables)'
 EOF
 )
+getvalue_func[$key]=getvalue_sysstat
 
-## transaction
-global_attrs['transaction']=$( cat <<'EOF'
+key=transaction
+global_attrs[$key]=$( cat <<'EOF'
     graph_title Oracle Transactions
     graph_category Oracle
     graph_args --base 1000 --lower-limit 0 --rigid
@@ -194,16 +207,76 @@ global_attrs['transaction']=$( cat <<'EOF'
     graph_info Oracle Transactions
 EOF
 )
-data_attrs['transaction']=$( cat <<'EOF'
+data_attrs[$key]=$( cat <<'EOF'
     user_commits   DERIVE LINE 'user commits'
     user_rollbacks DERIVE LINE 'user rollbacks'
 EOF
 )
+getvalue_func[$key]=getvalue_sysstat
+
+key=sgainfo
+global_attrs[$key]=$( cat <<'EOF'
+    graph_title Oracle SGA Statistics
+    graph_category Oracle
+    graph_args --base 1024 --lower-limit 0 --rigid
+    graph_vlabel Bytes
+    graph_info Oracle SGA Statistics
+EOF
+)
+data_attrs[$key]=$( cat <<'EOF'
+    maximum_sga_size    GAUGE LINE      "Maximum SGA Size"
+    fixed_sga_size      GAUGE AREASTACK "Fixed SGA Size"
+    redo_buffers        GAUGE AREASTACK "Redo Buffers"
+    in-memory_area_size GAUGE AREASTACK "In-Memory Area Size"
+    shared_pool_size    GAUGE AREASTACK "Shared Pool Size"
+    large_pool_size     GAUGE AREASTACK "Large Pool Size"
+    java_pool_size      GAUGE AREASTACK "Java Pool Size"
+    streams_pool_size   GAUGE AREASTACK "Streams Pool Size"
+    shared_io_pool_size GAUGE AREASTACK "Shared IO Pool Size"
+    buffer_cache_size   GAUGE AREASTACK "Buffer Cache Size"
+EOF
+)
+getvalue_func[$key]=getvalue_sgainfo
+
+key=pgastat
+global_attrs[$key]=$( cat <<'EOF'
+    graph_title Oracle PGA Statistics
+    graph_category Oracle
+    graph_args --base 1024 --lower-limit 0 --rigid
+    graph_vlabel Bytes
+    graph_info Oracle PGA Statistics
+EOF
+)
+data_attrs[$key]=$( cat <<'EOF'
+    pga_target    GAUGE LINE 'aggregate PGA auto target'
+    pga_allocated GAUGE LINE 'total PGA allocated'
+    pga_inuse     GAUGE AREA 'total PGA inuse'
+EOF
+)
+getvalue_func[$key]=getvalue_pgastat
+
+key=cachehit
+global_attrs[$key]=$( cat <<'EOF'
+    graph_title Oracle Cache Hit Ratio
+    graph_category Oracle
+    graph_args --base 1000 --lower-limit 0 --upper-limit 100 --rigid
+    graph_vlabel %
+    graph_info Oracle Cache Hit Ratio
+    graph_scale no
+EOF
+)
+data_attrs[$key]=$( cat <<'EOF'
+    buf_hitratio  GAUGE LINE 'Buffer Cache Hit Ratio'
+    lib_hitratio  GAUGE LINE 'Library Cache Hit Ratio'
+    dict_hitratio GEUGE LINE 'Dictionary Cache Hit Ratio'
+EOF
+)
+getvalue_func[$key]=getvalue_cachehit
 
 # End of Graph Settings
 
 autoconf() {
-    if [ -x "$( which sqlplus )" ]; then
+    if [ -x "$( which ${sqlplus} )" ]; then
         echo yes
     else
         echo "no (failed to find executable 'sqlplus')"
@@ -212,11 +285,7 @@ autoconf() {
 }
 
 suggest() {
-    local i
-    for i in ${!global_attrs[@]}
-    do
-        echo $i
-    done
+    echo ${!global_attrs[@]} | tr ' ' '\n' | sort
 
     exit 0
 }
@@ -249,7 +318,17 @@ EOF
     exit 0
 }
 
+getfield() {
+    if [ -n "${getfield_func[$module]}" ]; then
+        eval ${getfield_func[$module]}
+    fi
+}
+
 getvalue() {
+    eval ${getvalue_func[$module]}
+}
+
+getvalue_sysstat() {
     local data_attr t field label
     while read data_attr
     do
@@ -257,7 +336,7 @@ getvalue() {
         field="${t[0]}"
         label="${t[3]}"
 
-        sqlplus -s "${oracle_auth}" <<EOF | grep -v '^$'
+        ${sqlplus} -s "${oracle_auth}" <<EOF | grep -v '^$'
 set pagesize 0
 set feedback off
 set linesize 256
@@ -277,6 +356,101 @@ EOF
     exit 0
 }
 
+getvalue_sgainfo() {
+    local data_attr t field label
+    while read data_attr
+    do
+        eval t=( "${data_attr}" )
+        field="${t[0]}"
+        label="${t[3]}"
+
+        ${sqlplus} -s "${oracle_auth}" <<EOF | grep -v '^$'
+set pagesize 0
+set feedback off
+set linesize 256
+set numwidth 30
+SELECT
+  '${field}.value ' || bytes
+FROM
+  v\$sgainfo
+WHERE
+  name = '${label}';
+EOF
+    done < <( cat <<EOF
+${data_attrs[$module]}
+EOF
+)
+  
+    exit 0
+}
+
+getvalue_pgastat() {
+    local data_attr t field label
+    while read data_attr
+    do
+        eval t=( "${data_attr}" )
+        field="${t[0]}"
+        label="${t[3]}"
+
+        ${sqlplus} -s "${oracle_auth}" <<EOF | grep -v '^$'
+set pagesize 0
+set feedback off
+set linesize 256
+set numwidth 30
+SELECT
+  '${field}.value ' || value
+FROM
+  v\$pgastat
+WHERE
+  name = '${labels[$i]}';
+EOF
+        i=$((i+1))
+    done < <( cat <<EOF
+${data_attrs[$module]}
+EOF
+)
+
+    exit 0
+}
+
+getvalue_cachehit() {
+    ${sqlplus} -s "${oracle_auth}" <<EOF | grep -v '^$'
+set pagesize 0
+set linesize 256
+set numwidth 30
+SELECT
+   'buf_hitratio.value ' || round( ( 1 - ( SUM( DECODE( name, 'physical reads', value, 0 ) ) /
+    ( SUM( DECODE( name, 'consistent gets', value, 0) ) +
+      SUM( DECODE( name, 'db block gets', value, 0 ) ) ) ) ) * 100 )
+FROM
+  v\$sysstat
+WHERE
+  name IN ( 'physical reads', 'db block gets', 'consistent gets' );
+EOF
+
+    ${sqlplus} -s "${oracle_auth}" <<EOF | grep -v '^$'
+set pagesize 0
+set linesize 256
+set numwidth 30
+SELECT
+  'lib_hitratio.value ' || round( sum(pins) / ( sum(pins) + sum(reloads) ) * 100 )
+FROM
+  v\$librarycache;
+EOF
+
+    ${sqlplus} -s "${oracle_auth}" <<EOF | grep -v '^$'
+set pagesize 0
+set linesize 256
+set numwidth 30
+SELECT
+  'dict_hitratio.value ' || round( ( 1 - sum(getmisses) / sum(gets) ) * 100 )
+FROM
+  v\$rowcache;
+EOF
+
+    exit 0
+}
+
 # main
 case $1 in
 autoconf)
@@ -286,9 +460,11 @@ suggest)
     suggest
     ;;
 config)
+    getfield
     config
     ;;
 *)
+    getfield
     getvalue
     ;;
 esac
