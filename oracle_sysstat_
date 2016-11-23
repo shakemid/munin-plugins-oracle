@@ -60,9 +60,9 @@
 . $MUNIN_LIBDIR/plugins/plugin.sh
 
 # Environments
-: ${oracle_auth:=/ as SYSDBA}
 : ${ORACLE_SID:=orcl}
 : ${ORACLE_HOME:=$( echo /opt/oracle/product/* )}
+: ${oracle_auth:=/ as SYSDBA}
 : ${sqlplus:=sqlplus}
 
 PATH=$PATH:$ORACLE_HOME/bin
@@ -286,7 +286,6 @@ autoconf() {
 
 suggest() {
     echo ${!global_attrs[@]} | tr ' ' '\n' | sort
-
     exit 0
 }
 
@@ -326,6 +325,7 @@ getfield() {
 
 getvalue() {
     eval ${getvalue_func[$module]}
+    exit 0
 }
 
 getvalue_sysstat() {
@@ -352,8 +352,6 @@ EOF
 ${data_attrs[$module]}
 EOF
 )
-  
-    exit 0
 }
 
 getvalue_sgainfo() {
@@ -380,8 +378,6 @@ EOF
 ${data_attrs[$module]}
 EOF
 )
-  
-    exit 0
 }
 
 getvalue_pgastat() {
@@ -409,8 +405,6 @@ EOF
 ${data_attrs[$module]}
 EOF
 )
-
-    exit 0
 }
 
 getvalue_cachehit() {
@@ -447,8 +441,6 @@ SELECT
 FROM
   v\$rowcache;
 EOF
-
-    exit 0
 }
 
 # main
