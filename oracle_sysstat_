@@ -256,7 +256,7 @@ getvalue_func[$key]=getvalue_tablespace
 
 key=asmusage
 global_attrs[$key]="\
-    echo graph_title Oracle ASM Disk Group Usage
+    graph_title Oracle ASM Disk Group Usage
     graph_category db
     graph_args --base 1000 --lower-limit 0 --upper-limit 100 --rigid
     graph_vlabel %
