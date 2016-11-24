@@ -101,7 +101,7 @@ global_attrs[$key]="\
     graph_vlabel count
     graph_info Oracle Open Cursors "
 data_attrs[$key]="\
-    open_cursor GAUGE LINE 'Open Cursors' "
+    open_cursor GAUGE LINE 'opened cursors current' "
 getvalue_func[$key]=getvalue_sysstat
 
 key=execute
@@ -498,7 +498,7 @@ SELECT
 FROM
   v\$pgastat
 WHERE
-  name = '${labels[$i]}';
+  name = '${label}';
 EOF
     done < <( cat <<EOF
 ${data_attrs[$module]}
