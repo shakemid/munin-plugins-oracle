@@ -7,18 +7,24 @@
 
   oracle_sysstat_* - Munin plugin to monitor Oracle Statistics
 
-    cursor       - To monitor Oracle Open Cursor
-    execute      - To monitor Oracle Execute Count
-    parse        - To monitor Oracle Parse Count
-    physicaliops - To monitor Oracle Physical I/O Requests
-    physicalrw   - To monitor Oracle Physical Read/Write
-    sort         - To monitor Oracle Sorts
-    tablescan    - To monitor Oracle Table Scans
-    transaction  - To monitor Oracle Transactions
-    sgainfo      - To monitor Oracle SGA
-    pgastat      - To monitor Oracle PGA
-    cachehit     - To monitor Oracle Cache Hit Ratio
-    tablespace   - To monitor Oracle Table Space Usage
+    cursor               - To monitor Oracle Open Cursor
+    execute              - To monitor Oracle Execute Count
+    parse                - To monitor Oracle Parse Count
+    physicaliops         - To monitor Oracle Physical I/O Requests
+    physicalrw           - To monitor Oracle Physical Read/Write
+    sort                 - To monitor Oracle Sorts
+    tablescan            - To monitor Oracle Table Scans
+    transaction          - To monitor Oracle Transactions
+    sgainfo              - To monitor Oracle SGA
+    pgastat              - To monitor Oracle PGA
+    cachehit             - To monitor Oracle Cache Hit Ratio
+    tablespace           - To monitor Oracle Table Space Usage
+    asmusage             - To monitor Oracle ASM Disk Group Usage
+    sessionwait          - To monitor Oracle Session Wait
+    eventwait            - To monitor Oracle Wait Event
+    eventwaitconcurrency - To monitor Oracle Wait Event - Concurrency
+    eventwaitapplication - To monitor Oracle Wait Event - Application
+    eventwaituserio      - To monitor Oracle Wait Event - User I/O
 
 =head1 CONFIGURATION
 
@@ -37,6 +43,12 @@
       user  oracle
       env.oracle_auth  / as SYSDBA
       env.ORACLE_HOME  /path/to/oracle/product/version
+      env.ORACLE_SID   SOMESID
+
+    [oracle_sysstat_asmusage]
+      user  grid
+      env.oracle_auth  / as SYSASM
+      env.ORACLE_HOME  /path/to/grid/home/version
       env.ORACLE_SID   SOMESID
 
 =head1 NOTES
@@ -72,17 +84,17 @@ export PATH ORACLE_HOME ORACLE_SID
 module=$( basename $0 | sed -e 's/^.*_//' )
 
 # Graph settings
-declare -A global_attrs
-declare -A data_attrs  # field type draw 'label'
-declare -A getfield_func
-declare -A getvalue_func
+declare -A global_attrs  # required
+declare -A data_attrs    # required (format: field type draw 'label')
+declare -A getfield_func # optional
+declare -A getvalue_func # required
 
 key=cursor
 global_attrs[$key]="\
     graph_title Oracle Open Cursors
     graph_category db
     graph_args --base 1000 --lower-limit 0 --rigid
-    graph_vlabel Count
+    graph_vlabel count
     graph_info Oracle Open Cursors "
 data_attrs[$key]="\
     open_cursor GAUGE LINE 'Open Cursors' "
@@ -93,7 +105,7 @@ global_attrs[$key]="\
     graph_title Oracle Execute Count
     graph_category db
     graph_args --base 1000 --lower-limit 0 --rigid
-    graph_vlabel Count
+    graph_vlabel count
     graph_info Oracle Execute Count "
 data_attrs[$key]="\
     execute_count    DERIVE LINE 'execute count'
@@ -106,7 +118,7 @@ global_attrs[$key]="\
     graph_title Oracle Parse Count
     graph_category db
     graph_args --base 1000 --lower-limit 0 --rigid
-    graph_vlabel Count
+    graph_vlabel count
     graph_info Oracle Parse Count "
 data_attrs[$key]="\
     user_calls            DERIVE LINE 'user calls'
@@ -137,13 +149,13 @@ global_attrs[$key]="\
     graph_title Oracle Physical Read/Write
     graph_category db
     graph_args --base 1024 --lower-limit 0 --rigid
-    graph_vlabel Bytes per second
+    graph_vlabel bytes per second
     graph_info Oracle Physical Read/Write "
 data_attrs[$key]="\
     physical_read_total  DERIVE LINE2 'physical read total bytes'
     physical_read        DERIVE LINE  'physical read bytes'
     physical_write_total DERIVE LINE2 'physical write total bytes'
-    physical_write       DERIVE LINE  'physical write bytes'"
+    physical_write       DERIVE LINE  'physical write bytes' "
 getvalue_func[$key]=getvalue_sysstat
 
 key=sort
@@ -151,7 +163,7 @@ global_attrs[$key]="\
     graph_title Oracle Sorts
     graph_category db
     graph_args --base 1000 --lower-limit 0 --rigid
-    graph_vlabel Count
+    graph_vlabel count
     graph_info Oracle Sorts "
 data_attrs[$key]="\
     sorts_memory DERIVE LINE 'sorts (memory)'
@@ -163,7 +175,7 @@ global_attrs[$key]="\
     graph_title Oracle Table Scans
     graph_category db
     graph_args --base 1000 --lower-limit 0 --rigid
-    graph_vlabel Count
+    graph_vlabel count
     graph_info Oracle Table Scans "
 data_attrs[$key]="\
     table_scans_short_tables DERIVE LINE 'table scans (short tables)'
@@ -175,7 +187,7 @@ global_attrs[$key]="\
     graph_title Oracle Transactions
     graph_category db
     graph_args --base 1000 --lower-limit 0 --rigid
-    graph_vlabel Count per second
+    graph_vlabel count per second
     graph_info Oracle Transactions "
 data_attrs[$key]="\
     user_commits   DERIVE LINE 'user commits'
@@ -187,7 +199,7 @@ global_attrs[$key]="\
     graph_title Oracle SGA Statistics
     graph_category db
     graph_args --base 1024 --lower-limit 0 --rigid
-    graph_vlabel Bytes
+    graph_vlabel bytes
     graph_info Oracle SGA Statistics "
 data_attrs[$key]="\
     maximum_sga_size    GAUGE LINE      'Maximum SGA Size'
@@ -207,7 +219,7 @@ global_attrs[$key]="\
     graph_title Oracle PGA Statistics
     graph_category db
     graph_args --base 1024 --lower-limit 0 --rigid
-    graph_vlabel Bytes
+    graph_vlabel bytes
     graph_info Oracle PGA Statistics "
 data_attrs[$key]="\
     pga_target    GAUGE LINE 'aggregate PGA auto target'
@@ -236,23 +248,131 @@ global_attrs[$key]="\
     graph_args --base 1000 --lower-limit 0 --upper-limit 100 --rigid
     graph_vlabel %
     graph_info Oracle Table Space Usage
-    warning ${warning:=90}
-    critical ${critical:=95} "
+    warning ${warning:=92}
+    critical ${critical:=98} "
 data_attrs[$key]=""
 getfield_func[$key]=getfield_tablespace
 getvalue_func[$key]=getvalue_tablespace
+
+key=asmusage
+global_attrs[$key]="\
+    echo graph_title Oracle ASM Disk Group Usage
+    graph_category db
+    graph_args --base 1000 --lower-limit 0 --upper-limit 100 --rigid
+    graph_vlabel %
+    graph_info Oracle ASM Disk Group Usage
+    warning ${warning:=92}
+    critical ${critical:=98} "
+data_attrs[$key]=""
+getfield_func[$key]=getfield_asmusage
+getvalue_func[$key]=getvalue_asmusage
+
+key=sessionwait
+global_attrs[$key]="\
+    graph_title Oracle Session Wait Statistics
+    graph_category db
+    graph_args --base 1000 --lower-limit 0 --rigid
+    graph_vlabel count
+    graph_info Oracle Session Wait Statistics "
+data_attrs[$key]=""
+getfield_func[$key]=getfield_sessionwait
+getvalue_func[$key]=getvalue_sessionwait
+
+key=eventwait
+global_attrs[$key]="\
+    graph_title Oracle Wait Event
+    graph_category db
+    graph_args --base 1000 --lower-limit 0 --rigid
+    graph_vlabel microseconds
+    graph_info Oracle Wait Event "
+data_attrs[$key]=""
+getfield_func[$key]=getfield_eventwait
+getvalue_func[$key]=getvalue_eventwait
+
+key=eventwaitconcurrency
+global_attrs[$key]="\
+    graph_title Oracle Wait Event - Concurrency
+    graph_category db
+    graph_args --base 1000 --lower-limit 0 --rigid
+    graph_vlabel microseconds
+    graph_info Oracle Wait Event - Concurrency "
+# memo: select event from v$system_event where wait_class = 'Concurrency' order by event;
+data_attrs[$key]="\
+    buffer_busy_waits                DERIVE LINE 'buffer busy waits'
+    cursor_mutex_s                   DERIVE LINE 'cursor: mutex S'
+    cursor_mutex_x                   DERIVE LINE 'cursor: mutex X'
+    cursor_pin_s                     DERIVE LINE 'cursor: pin S'
+    cursor_pin_s_wait_on_x           DERIVE LINE 'cursor: pin S wait on X'
+    cursor_pin_x                     DERIVE LINE  'cursor: pin X'
+    enq_tx_index_contention          DERIVE LINE 'enq: TX - index contention'
+    latch_cache_buffers_chains       DERIVE LINE 'latch: cache buffers chains'
+    latch_row_cache_objects          DERIVE LINE 'latch: row cache objects'
+    latch_shared_pool                DERIVE LINE 'latch: shared pool'
+    lck0_row_cache_object_free       DERIVE LINE 'LCK0 row cache object free'
+    libcache_interrupt_action_by_lck DERIVE LINE 'libcache interrupt action by LCK'
+    library_cache_load_lock          DERIVE LINE 'library cache load lock'
+    library_cache_lock               DERIVE LINE 'library cache lock'
+    library_cache_pin                DERIVE LINE 'library cache pin'
+    library_cache_mutex_x            DERIVE LINE 'library cache: mutex X'
+    resmgr_internal_state_change     DERIVE LINE 'resmgr:internal state change'
+    row_cache_lock                   DERIVE LINE 'row cache lock' "
+getvalue_func[$key]=getvalue_eventwait2
+
+key=eventwaitapplication
+global_attrs[$key]="\
+    graph_title Oracle Wait Event - Application
+    graph_category db
+    graph_args --base 1000 --lower-limit 0 --rigid
+    graph_vlabel microseconds
+    graph_info Oracle Wait Event - Application "
+# memo: select event from v$system_event where wait_class = 'Application' order by event;
+data_attrs[$key]="\
+    enq_ro_fast_object_reuse      DERIVE LINE 'enq: RO - fast object reuse'
+    enq_ko_fast_object_checkpoint DERIVE LINE 'enq: KO - fast object checkpoint'
+    enq_tm_contention             DERIVE LINE 'enq: TM - contention'
+    enq_tx_row_lock_contention    DERIVE LINE 'enq: TX - row lock contention'
+    enq_ul_contention             DERIVE LINE 'enq: UL - contention'
+    sqlnet_break_reset_to_client  DERIVE LINE 'SQL*Net break/reset to client' "
+getvalue_func[$key]=getvalue_eventwait2
+
+key=eventwaituserio
+global_attrs[$key]="\
+    graph_title Oracle Wait Event - User I/O
+    graph_category db
+    graph_args --base 1000 --lower-limit 0 --rigid
+    graph_vlabel microseconds
+    graph_info Oracle Wait Event - User I/O "
+# memo: select event from v$system_event where wait_class = 'User I/O' order by event;
+data_attrs[$key]="\
+    parameter_file_io       DERIVE LINE 'Parameter File I/O'
+    disk_file_operations_io DERIVE LINE 'Disk file operations I/O'
+    data_file_init_write    DERIVE LINE 'Data file init write'
+    local_write_wait        DERIVE LINE 'local write wait'
+    read_by_other_session   DERIVE LINE 'read by other session'
+    db_file_sequential_read DERIVE LINE 'db file sequential read'
+    db_file_scattered_read  DERIVE LINE 'db file scattered read'
+    db_file_single_write    DERIVE LINE 'db file single write'
+    db_file_parallel_read   DERIVE LINE 'db file parallel read'
+    direct_path_read        DERIVE LINE 'direct path read'
+    direct_path_read_temp   DERIVE LINE 'direct path read temp'
+    direct_path_write       DERIVE LINE 'direct path write'
+    direct_path_write_temp  DERIVE LINE 'direct path write temp'
+    external_table_read     DERIVE LINE 'external table read'
+    external_table_write    DERIVE LINE 'external table write'
+    external_table_open     DERIVE LINE 'external table open' "
+getvalue_func[$key]=getvalue_eventwait2
 
 # End of Graph Settings
 
 # sqlplus options
 : ${sqlplus:=sqlplus}
-: ${sqlplus_opts:=-S}
+: ${sqlplus_opts:=-S -L}
 sqlplus_variables="\
     set pagesize 0
     set feed off
     set head off
     set linesize 256
-    set numwidth 30 "
+    set numwidth 20 "
 
 # functions 
 
@@ -280,14 +400,11 @@ EOF
     do
         eval t=( "${line}" )
         field="${t[0]}"
+        [ -z "$field" ] && continue
         fields+=( $field )
         type="${t[1]}"
         draw="${t[2]}"
         label="${t[3]}"
-
-        if [ -z "$field" ]; then
-            continue
-        fi
 
         echo ${field}.type  ${type}
         echo ${field}.draw  ${draw}
@@ -319,9 +436,10 @@ getvalue_sysstat() {
     do
         eval t=( "${line}" )
         field="${t[0]}"
+        [ -z "$field" ] && continue
         label="${t[3]}"
 
-        ${sqlplus} "${sqlplus_opts}" "${oracle_auth}" <<EOF
+        ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
   '${field}.value ' || value
@@ -342,9 +460,10 @@ getvalue_sgainfo() {
     do
         eval t=( "${line}" )
         field="${t[0]}"
+        [ -z "$field" ] && continue
         label="${t[3]}"
 
-        ${sqlplus} "${sqlplus_opts}" "${oracle_auth}" <<EOF
+        ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
   '${field}.value ' || bytes
@@ -365,9 +484,10 @@ getvalue_pgastat() {
     do
         eval t=( "${line}" )
         field="${t[0]}"
+        [ -z "$field" ] && continue
         label="${t[3]}"
 
-        ${sqlplus} "${sqlplus_opts}" "${oracle_auth}" <<EOF
+        ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
   '${field}.value ' || value
@@ -376,7 +496,6 @@ FROM
 WHERE
   name = '${labels[$i]}';
 EOF
-        i=$((i+1))
     done < <( cat <<EOF
 ${data_attrs[$module]}
 EOF
@@ -384,7 +503,7 @@ EOF
 }
 
 getvalue_cachehit() {
-    ${sqlplus} "${sqlplus_opts}" "${oracle_auth}" <<EOF
+    ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
   'buf_hitratio.value ' || round( ( 1 - a.value / ( b.value + c.value ) ) * 100 )
@@ -396,7 +515,7 @@ WHERE
   c.name = 'consistent gets';
 EOF
 
-    ${sqlplus} "${sqlplus_opts}" "${oracle_auth}" <<EOF
+    ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
   'lib_hitratio.value ' || round( sum(pins) / ( sum(pins) + sum(reloads) ) * 100 )
@@ -404,7 +523,7 @@ FROM
   v\$librarycache;
 EOF
 
-    ${sqlplus} "${sqlplus_opts}" "${oracle_auth}" <<EOF
+    ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
   'dict_hitratio.value ' || round( ( 1 - sum(getmisses) / sum(gets) ) * 100 )
@@ -420,9 +539,9 @@ getfield_tablespace() {
     local line
     while read line
     do
-        data_attrs[$key]="${data_attrs[$key]}
-        $line ${type_default} ${draw_default} $line "
-    done < <( ${sqlplus} "${sqlplus_opts}" "${oracle_auth}" <<EOF
+        data_attrs[$module]="${data_attrs[$module]}
+        $line ${type_default} ${draw_default} '$line' "
+    done < <( ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
    regexp_replace( tablespace_name, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' )
@@ -435,7 +554,7 @@ EOF
 }
 
 getvalue_tablespace() {
-    ${sqlplus} "${sqlplus_opts}" "${oracle_auth}" <<EOF
+    ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
   regexp_replace( tablespace_name, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) || '.value ' ||
@@ -460,6 +579,165 @@ FROM
 WHERE
   tablespace_name = free_tablespace_name;
 EOF
+}
+
+getfield_asmusage() {
+    local type_default=GAUGE
+    local draw_default=LINE
+
+    local line
+    while read line
+    do
+        data_attrs[$module]="${data_attrs[$module]}
+        $line ${type_default} ${draw_default} '$line' "
+    done < <( ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
+${sqlplus_variables}
+SELECT
+   regexp_replace( name, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' )
+FROM
+   v\$asm_diskgroup
+ORDER BY
+   name;
+EOF
+)
+}
+
+getvalue_asmusage() {
+    ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
+${sqlplus_variables}
+SELECT
+   regexp_replace( name, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) || '.value ' ||
+   round( ( total_mb - free_mb ) / total_mb * 100 )
+FROM
+   v\$asm_diskgroup
+ORDER BY
+   name;
+EOF
+}
+
+getfield_sessionwait() {
+    local type_default=GAUGE
+    local draw_default=AREASTACK
+
+    local line
+    while read line
+    do
+        data_attrs[$module]="${data_attrs[$module]}
+        $( clean_fieldname $line ) ${type_default} ${draw_default} '$line' "
+    done < <( ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
+${sqlplus_variables}
+SELECT
+  wait_class
+FROM
+  v\$event_name
+WHERE
+  wait_class NOT IN ( 'Other', 'Idle' )
+GROUP BY
+  wait_class
+ORDER BY
+  wait_class;
+SELECT 'Other' from dual;
+SELECT 'Idle' from dual;
+EOF
+)
+}
+
+getvalue_sessionwait() {
+    local line t field label
+    while read line
+    do
+        eval t=( "${line}" )
+        field="${t[0]}"
+        [ -z "$field" ] && continue
+        label="${t[3]}"
+
+        ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
+${sqlplus_variables}
+SELECT
+  '${field}.value ' || count(wait_class)
+FROM
+  v\$session
+WHERE
+  username is not null and wait_class = '${label}';
+EOF
+    done < <( cat <<EOF
+${data_attrs[$module]}
+EOF
+)
+}
+
+getfield_eventwait() {
+    local type_default=DERIVE
+    local draw_default=LINE
+
+    local line
+    while read line
+    do
+        data_attrs[$module]="${data_attrs[$module]}
+        $( clean_fieldname $line ) ${type_default} ${draw_default} '$line' "
+    done < <( ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
+${sqlplus_variables}
+SELECT
+  wait_class
+FROM
+  v\$event_name
+WHERE
+  wait_class NOT IN ( 'Other', 'Idle' )
+GROUP BY
+  wait_class
+ORDER BY
+  wait_class;
+SELECT 'Other' from dual;
+EOF
+)
+}
+
+getvalue_eventwait() {
+    local line t field label
+    while read line
+    do
+        eval t=( "${line}" )
+        field="${t[0]}"
+        [ -z "$field" ] && continue
+        label="${t[3]}"
+
+        ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
+${sqlplus_variables}
+SELECT
+  '${field}.value ' || sum(time_waited_micro)
+FROM
+  v\$system_event
+WHERE
+  wait_class = '${label}';
+EOF
+    done < <( cat <<EOF
+${data_attrs[$module]}
+EOF
+)
+}
+
+getvalue_eventwait2() {
+    local line t field label
+    while read line
+    do
+        eval t=( "${line}" )
+        field="${t[0]}"
+        [ -z "$field" ] && continue
+        label="${t[3]}"
+
+        ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
+${sqlplus_variables}
+SELECT
+  '${field}.value ' || time_waited_micro
+FROM
+  v\$system_event
+WHERE
+  event = '${label}';
+EOF
+    done < <( cat <<EOF
+${data_attrs[$module]}
+EOF
+)
 }
 
 # main
