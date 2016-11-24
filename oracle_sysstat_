@@ -400,7 +400,7 @@ ${global_attrs[$module]}
 EOF
 
     local line t fields field type draw label
-    while read line
+    while read -r line
     do
         eval t=\( "${line}" \)
         field="${t[0]}"
@@ -436,7 +436,7 @@ getvalue() {
 
 getvalue_sysstat() {
     local line t field label
-    while read line
+    while read -r line
     do
         eval t=\( "${line}" \)
         field="${t[0]}"
@@ -460,7 +460,7 @@ EOF
 
 getvalue_sgainfo() {
     local line t field label
-    while read line
+    while read -r line
     do
         eval t=\( "${line}" \)
         field="${t[0]}"
@@ -484,7 +484,7 @@ EOF
 
 getvalue_pgastat() {
     local line t field label
-    while read line
+    while read -r line
     do
         eval t=\( "${line}" \)
         field="${t[0]}"
@@ -541,7 +541,7 @@ getfield_tablespace() {
     local draw_default=LINE
 
     local line
-    while read line
+    while read -r line
     do
         data_attrs[$module]="${data_attrs[$module]}
         $line ${type_default} ${draw_default} '$line' "
@@ -590,7 +590,7 @@ getfield_asmusage() {
     local draw_default=LINE
 
     local line
-    while read line
+    while read -r line
     do
         data_attrs[$module]="${data_attrs[$module]}
         $line ${type_default} ${draw_default} '$line' "
@@ -624,7 +624,7 @@ getfield_sessionwait() {
     local draw_default=AREASTACK
 
     local line
-    while read line
+    while read -r line
     do
         data_attrs[$module]="${data_attrs[$module]}
         $( clean_fieldname $line ) ${type_default} ${draw_default} '$line' "
@@ -648,7 +648,7 @@ EOF
 
 getvalue_sessionwait() {
     local line t field label
-    while read line
+    while read -r line
     do
         eval t=\( "${line}" \)
         field="${t[0]}"
@@ -675,7 +675,7 @@ getfield_eventwait() {
     local draw_default=LINE
 
     local line
-    while read line
+    while read -r line
     do
         data_attrs[$module]="${data_attrs[$module]}
         $( clean_fieldname $line ) ${type_default} ${draw_default} '$line' "
@@ -698,7 +698,7 @@ EOF
 
 getvalue_eventwait() {
     local line t field label
-    while read line
+    while read -r line
     do
         eval t=\( "${line}" \)
         field="${t[0]}"
@@ -722,7 +722,7 @@ EOF
 
 getvalue_eventwait2() {
     local line t field label
-    while read line
+    while read -r line
     do
         eval t=\( "${line}" \)
         field="${t[0]}"
