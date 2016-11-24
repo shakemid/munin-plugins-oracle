@@ -18,6 +18,7 @@
     sgainfo      - To monitor Oracle SGA
     pgastat      - To monitor Oracle PGA
     cachehit     - To monitor Oracle Cache Hit Ratio
+    tablespace   - To monitor Oracle Table Space Usage
 
 =head1 CONFIGURATION
 
@@ -79,7 +80,7 @@ declare -A getvalue_func
 key=cursor
 global_attrs[$key]="\
     graph_title Oracle Open Cursors
-    graph_category Oracle
+    graph_category db
     graph_args --base 1000 --lower-limit 0 --rigid
     graph_vlabel Count
     graph_info Oracle Open Cursors "
@@ -90,7 +91,7 @@ getvalue_func[$key]=getvalue_sysstat
 key=execute
 global_attrs[$key]="\
     graph_title Oracle Execute Count
-    graph_category Oracle
+    graph_category db
     graph_args --base 1000 --lower-limit 0 --rigid
     graph_vlabel Count
     graph_info Oracle Execute Count "
@@ -103,7 +104,7 @@ getvalue_func[$key]=getvalue_sysstat
 key=parse
 global_attrs[$key]="\
     graph_title Oracle Parse Count
-    graph_category Oracle
+    graph_category db
     graph_args --base 1000 --lower-limit 0 --rigid
     graph_vlabel Count
     graph_info Oracle Parse Count "
@@ -118,7 +119,7 @@ getvalue_func[$key]=getvalue_sysstat
 key=physicaliops
 global_attrs[$key]="\
     graph_title Oracle Physical I/O Requests
-    graph_category Oracle
+    graph_category db
     graph_args --base 1000 --lower-limit 0 --rigid
     graph_vlabel iops
     graph_info Oracle Physical I/O Requests "
@@ -134,7 +135,7 @@ getvalue_func[$key]=getvalue_sysstat
 key=physicalrw
 global_attrs[$key]="\
     graph_title Oracle Physical Read/Write
-    graph_category Oracle
+    graph_category db
     graph_args --base 1024 --lower-limit 0 --rigid
     graph_vlabel Bytes per second
     graph_info Oracle Physical Read/Write "
@@ -148,7 +149,7 @@ getvalue_func[$key]=getvalue_sysstat
 key=sort
 global_attrs[$key]="\
     graph_title Oracle Sorts
-    graph_category Oracle
+    graph_category db
     graph_args --base 1000 --lower-limit 0 --rigid
     graph_vlabel Count
     graph_info Oracle Sorts "
@@ -160,7 +161,7 @@ getvalue_func[$key]=getvalue_sysstat
 key=tablescan
 global_attrs[$key]="\
     graph_title Oracle Table Scans
-    graph_category Oracle
+    graph_category db
     graph_args --base 1000 --lower-limit 0 --rigid
     graph_vlabel Count
     graph_info Oracle Table Scans "
@@ -172,7 +173,7 @@ getvalue_func[$key]=getvalue_sysstat
 key=transaction
 global_attrs[$key]="\
     graph_title Oracle Transactions
-    graph_category Oracle
+    graph_category db
     graph_args --base 1000 --lower-limit 0 --rigid
     graph_vlabel Count per second
     graph_info Oracle Transactions "
@@ -184,7 +185,7 @@ getvalue_func[$key]=getvalue_sysstat
 key=sgainfo
 global_attrs[$key]="\
     graph_title Oracle SGA Statistics
-    graph_category Oracle
+    graph_category db
     graph_args --base 1024 --lower-limit 0 --rigid
     graph_vlabel Bytes
     graph_info Oracle SGA Statistics "
@@ -204,7 +205,7 @@ getvalue_func[$key]=getvalue_sgainfo
 key=pgastat
 global_attrs[$key]="\
     graph_title Oracle PGA Statistics
-    graph_category Oracle
+    graph_category db
     graph_args --base 1024 --lower-limit 0 --rigid
     graph_vlabel Bytes
     graph_info Oracle PGA Statistics "
@@ -217,7 +218,7 @@ getvalue_func[$key]=getvalue_pgastat
 key=cachehit
 global_attrs[$key]="\
     graph_title Oracle Cache Hit Ratio
-    graph_category Oracle
+    graph_category db
     graph_args --base 1000 --lower-limit 0 --upper-limit 100 --rigid
     graph_vlabel %
     graph_info Oracle Cache Hit Ratio
@@ -227,6 +228,19 @@ data_attrs[$key]="\
     lib_hitratio  GAUGE LINE 'Library Cache Hit Ratio'
     dict_hitratio GEUGE LINE 'Dictionary Cache Hit Ratio' "
 getvalue_func[$key]=getvalue_cachehit
+
+key=tablespace
+global_attrs[$key]="\
+    graph_title Oracle Table Space Usage
+    graph_category db
+    graph_args --base 1000 --lower-limit 0 --upper-limit 100 --rigid
+    graph_vlabel %
+    graph_info Oracle Table Space Usage
+    warning ${warning:=90}
+    critical ${critical:=95} "
+data_attrs[$key]=""
+getfield_func[$key]=getfield_tablespace
+getvalue_func[$key]=getvalue_tablespace
 
 # End of Graph Settings
 
@@ -261,15 +275,19 @@ config() {
 ${global_attrs[$module]}
 EOF
 
-    local data_attr t fields field type draw label
-    while read data_attr
+    local line t fields field type draw label
+    while read line
     do
-        eval t=( "${data_attr}" )
+        eval t=( "${line}" )
         field="${t[0]}"
         fields+=( $field )
         type="${t[1]}"
         draw="${t[2]}"
         label="${t[3]}"
+
+        if [ -z "$field" ]; then
+            continue
+        fi
 
         echo ${field}.type  ${type}
         echo ${field}.draw  ${draw}
@@ -296,14 +314,14 @@ getvalue() {
 }
 
 getvalue_sysstat() {
-    local data_attr t field label
-    while read data_attr
+    local line t field label
+    while read line
     do
-        eval t=( "${data_attr}" )
+        eval t=( "${line}" )
         field="${t[0]}"
         label="${t[3]}"
 
-        ${sqlplus} "${sqlplus_opts}" "${oracle_auth}" <<EOF | grep -v '^$'
+        ${sqlplus} "${sqlplus_opts}" "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
   '${field}.value ' || value
@@ -319,14 +337,14 @@ EOF
 }
 
 getvalue_sgainfo() {
-    local data_attr t field label
-    while read data_attr
+    local line t field label
+    while read line
     do
-        eval t=( "${data_attr}" )
+        eval t=( "${line}" )
         field="${t[0]}"
         label="${t[3]}"
 
-        ${sqlplus} "${sqlplus_opts}" "${oracle_auth}" <<EOF | grep -v '^$'
+        ${sqlplus} "${sqlplus_opts}" "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
   '${field}.value ' || bytes
@@ -342,14 +360,14 @@ EOF
 }
 
 getvalue_pgastat() {
-    local data_attr t field label
-    while read data_attr
+    local line t field label
+    while read line
     do
-        eval t=( "${data_attr}" )
+        eval t=( "${line}" )
         field="${t[0]}"
         label="${t[3]}"
 
-        ${sqlplus} "${sqlplus_opts}" "${oracle_auth}" <<EOF | grep -v '^$'
+        ${sqlplus} "${sqlplus_opts}" "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
   '${field}.value ' || value
@@ -366,7 +384,7 @@ EOF
 }
 
 getvalue_cachehit() {
-    ${sqlplus} "${sqlplus_opts}" "${oracle_auth}" <<EOF | grep -v '^$'
+    ${sqlplus} "${sqlplus_opts}" "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
   'buf_hitratio.value ' || round( ( 1 - a.value / ( b.value + c.value ) ) * 100 )
@@ -378,7 +396,7 @@ WHERE
   c.name = 'consistent gets';
 EOF
 
-    ${sqlplus} "${sqlplus_opts}" "${oracle_auth}" <<EOF | grep -v '^$'
+    ${sqlplus} "${sqlplus_opts}" "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
   'lib_hitratio.value ' || round( sum(pins) / ( sum(pins) + sum(reloads) ) * 100 )
@@ -386,12 +404,61 @@ FROM
   v\$librarycache;
 EOF
 
-    ${sqlplus} "${sqlplus_opts}" "${oracle_auth}" <<EOF | grep -v '^$'
+    ${sqlplus} "${sqlplus_opts}" "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
   'dict_hitratio.value ' || round( ( 1 - sum(getmisses) / sum(gets) ) * 100 )
 FROM
   v\$rowcache;
+EOF
+}
+
+getfield_tablespace() {
+    local type_default=GAUGE
+    local draw_default=LINE
+
+    local line
+    while read line
+    do
+        data_attrs[$key]="${data_attrs[$key]}
+        $line ${type_default} ${draw_default} $line "
+    done < <( ${sqlplus} "${sqlplus_opts}" "${oracle_auth}" <<EOF
+${sqlplus_variables}
+SELECT
+   regexp_replace( tablespace_name, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' )
+FROM
+   dba_data_files
+ORDER BY
+   tablespace_name;
+EOF
+)
+}
+
+getvalue_tablespace() {
+    ${sqlplus} "${sqlplus_opts}" "${oracle_auth}" <<EOF
+${sqlplus_variables}
+SELECT
+  regexp_replace( tablespace_name, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) || '.value ' ||
+  round( (total_bytes - free_total_bytes) / total_bytes * 100, 0 )
+FROM
+  ( SELECT
+      tablespace_name,
+      sum(bytes) total_bytes
+    FROM
+      dba_data_files
+    GROUP BY
+      tablespace_name
+  ),
+  ( SELECT
+      tablespace_name free_tablespace_name,
+      sum(bytes) free_total_bytes
+    FROM
+      dba_free_space
+    GROUP BY
+      tablespace_name
+  )
+WHERE
+  tablespace_name = free_tablespace_name;
 EOF
 }
 
