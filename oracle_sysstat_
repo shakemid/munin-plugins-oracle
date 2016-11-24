@@ -545,7 +545,7 @@ getfield_tablespace() {
     do
         data_attrs[$module]="${data_attrs[$module]}
         $line ${type_default} ${draw_default} '$line' "
-    done < <( ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
+    done < <( exec ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
    regexp_replace( tablespace_name, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' )
@@ -594,7 +594,7 @@ getfield_asmusage() {
     do
         data_attrs[$module]="${data_attrs[$module]}
         $line ${type_default} ${draw_default} '$line' "
-    done < <( ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
+    done < <( exec ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
    regexp_replace( name, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' )
@@ -628,7 +628,7 @@ getfield_sessionwait() {
     do
         data_attrs[$module]="${data_attrs[$module]}
         $( clean_fieldname $line ) ${type_default} ${draw_default} '$line' "
-    done < <( ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
+    done < <( exec ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
   wait_class
@@ -679,7 +679,7 @@ getfield_eventwait() {
     do
         data_attrs[$module]="${data_attrs[$module]}
         $( clean_fieldname $line ) ${type_default} ${draw_default} '$line' "
-    done < <( ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
+    done < <( exec ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
   wait_class
