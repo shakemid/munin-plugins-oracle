@@ -725,7 +725,7 @@ getvalue_eventwait() {
         ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
-  '${field}.value ' || sum(time_waited_micro)
+  '${field}.value ' || NVL( SUM(time_waited_micro), 0 )
 FROM
   v\$system_event
 WHERE
@@ -749,7 +749,7 @@ getvalue_eventwait2() {
         ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
-  '${field}.value ' || time_waited_micro
+  '${field}.value ' || NVL( time_waited_micro, 0 )
 FROM
   v\$system_event
 WHERE
