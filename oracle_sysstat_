@@ -15,6 +15,7 @@
     transaction          - To monitor Oracle Transactions
     physicaliops         - To monitor Oracle Physical I/O Requests
     physicalrw           - To monitor Oracle Physical Read/Write
+    enqueue              - To monitor Oracle Enqueues
     sgainfo              - To monitor Oracle SGA
     pgastat              - To monitor Oracle PGA
     cachehit             - To monitor Oracle Cache Hit Ratio
@@ -196,6 +197,22 @@ global_attrs[$key]="\
 data_attrs[$key]="\
     user_commits   DERIVE LINE 'user commits'
     user_rollbacks DERIVE LINE 'user rollbacks' "
+getvalue_func[$key]=getvalue_sysstat
+
+key=enqueue
+global_attrs[$key]="\
+    graph_title Oracle Enqueues
+    graph_category db
+    graph_args --base 1000 --lower-limit 0 --rigid
+    graph_vlabel count per second
+    graph_info Oracle Enqueues "
+data_attrs[$key]="\
+    enqueue_requests    DERIVE LINE 'enqueue requests'
+    enqueue_releases    DERIVE LINE 'enqueue releases'
+    enqueue_conversions DERIVE LINE 'enqueue conversions'
+    enqueue_waits       DERIVE LINE 'enqueue waits'
+    enqueue_timeouts    DERIVE LINE 'enqueue timeouts'
+    enqueue_deadlocks   DERIVE LINE 'enqueue deadlocks' "
 getvalue_func[$key]=getvalue_sysstat
 
 key=sgainfo
