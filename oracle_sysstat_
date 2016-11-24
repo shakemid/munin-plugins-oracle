@@ -70,7 +70,11 @@
 #%# family=contrib
 #%# capabilities=autoconf suggest
 
+# Include plugin.sh
 . $MUNIN_LIBDIR/plugins/plugin.sh
+
+# Like perl 'use strict;' 
+#set -o nounset
 
 # Environments
 : ${ORACLE_HOME:=$( echo /opt/oracle/product/* )}
@@ -303,7 +307,7 @@ data_attrs[$key]="\
     cursor_mutex_x                   DERIVE LINE 'cursor: mutex X'
     cursor_pin_s                     DERIVE LINE 'cursor: pin S'
     cursor_pin_s_wait_on_x           DERIVE LINE 'cursor: pin S wait on X'
-    cursor_pin_x                     DERIVE LINE  'cursor: pin X'
+    cursor_pin_x                     DERIVE LINE 'cursor: pin X'
     enq_tx_index_contention          DERIVE LINE 'enq: TX - index contention'
     latch_cache_buffers_chains       DERIVE LINE 'latch: cache buffers chains'
     latch_row_cache_objects          DERIVE LINE 'latch: row cache objects'
@@ -420,7 +424,7 @@ EOF
 }
 
 getfield() {
-    if [ -n "${getfield_func[$module]}" ]; then
+    if [ -n "${getfield_func[$module]:-}" ]; then
         ${getfield_func[$module]}
     fi
 }
@@ -741,7 +745,7 @@ EOF
 }
 
 # main
-case $1 in
+case ${1:-} in
 autoconf)
     autoconf
     ;;
