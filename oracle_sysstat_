@@ -238,7 +238,7 @@ global_attrs[$key]="\
 data_attrs[$key]="\
     buf_hitratio  GAUGE LINE 'Buffer Cache Hit Ratio'
     lib_hitratio  GAUGE LINE 'Library Cache Hit Ratio'
-    dict_hitratio GEUGE LINE 'Dictionary Cache Hit Ratio' "
+    dict_hitratio GAUGE LINE 'Dictionary Cache Hit Ratio' "
 getvalue_func[$key]=getvalue_cachehit
 
 key=tablespace
