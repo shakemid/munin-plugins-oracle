@@ -10,21 +10,21 @@
     cursor               - To monitor Oracle Open Cursor
     execute              - To monitor Oracle Execute Count
     parse                - To monitor Oracle Parse Count
-    physicaliops         - To monitor Oracle Physical I/O Requests
-    physicalrw           - To monitor Oracle Physical Read/Write
     sort                 - To monitor Oracle Sorts
     tablescan            - To monitor Oracle Table Scans
     transaction          - To monitor Oracle Transactions
+    physicaliops         - To monitor Oracle Physical I/O Requests
+    physicalrw           - To monitor Oracle Physical Read/Write
     sgainfo              - To monitor Oracle SGA
     pgastat              - To monitor Oracle PGA
     cachehit             - To monitor Oracle Cache Hit Ratio
     tablespace           - To monitor Oracle Table Space Usage
-    asmusage             - To monitor Oracle ASM Disk Group Usage
     sessionwait          - To monitor Oracle Session Wait
     eventwait            - To monitor Oracle Wait Event
     eventwaitconcurrency - To monitor Oracle Wait Event - Concurrency
     eventwaitapplication - To monitor Oracle Wait Event - Application
     eventwaituserio      - To monitor Oracle Wait Event - User I/O
+    asmusage             - To monitor Oracle ASM Disk Group Usage
 
 =head1 CONFIGURATION
 
