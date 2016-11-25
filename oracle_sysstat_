@@ -531,12 +531,14 @@ getvalue_sysstat() {
 
         ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
+VAR bv VARCHAR2(64)
+EXEC :bv := '${label}' 
 SELECT
   '${field}.value ' || value
 FROM
   v\$sysstat
 WHERE
-  name = '${label}';
+  name = :bv;
 EOF
     done <<< "${data_attrs[$module]}"
 }
@@ -552,12 +554,14 @@ getvalue_sgainfo() {
 
         ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
+VAR bv VARCHAR2(64)
+EXEC :bv := '${label}' 
 SELECT
   '${field}.value ' || bytes
 FROM
   v\$sgainfo
 WHERE
-  name = '${label}';
+  name = :bv;
 EOF
     done <<< "${data_attrs[$module]}"
 }
@@ -573,12 +577,14 @@ getvalue_pgastat() {
 
         ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
+VAR bv VARCHAR2(64)
+EXEC :bv := '${label}' 
 SELECT
   '${field}.value ' || value
 FROM
   v\$pgastat
 WHERE
-  name = '${label}';
+  name = :bv;
 EOF
     done <<< "${data_attrs[$module]}"
 }
@@ -736,12 +742,14 @@ getvalue_sessionwait() {
 
         ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
+VAR bv VARCHAR2(64)
+EXEC :bv := '${label}' 
 SELECT
   '${field}.value ' || count(wait_class)
 FROM
   v\$session
 WHERE
-  username is not null and wait_class = '${label}';
+  username is not null and wait_class = :bv;
 EOF
     done <<< "${data_attrs[$module]}"
 }
@@ -783,12 +791,14 @@ getvalue_eventwait() {
 
         ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
+VAR bv VARCHAR2(64)
+EXEC :bv := '${label}' 
 SELECT
   '${field}.value ' || NVL( SUM(time_waited_micro), 0 )
 FROM
   v\$system_event
 WHERE
-  wait_class = '${label}';
+  wait_class = :bv;
 EOF
     done <<< "${data_attrs[$module]}"
 }
@@ -804,12 +814,14 @@ getvalue_eventwait2() {
 
         ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
+VAR bv VARCHAR2(64)
+EXEC :bv := '${label}' 
 SELECT
   '${field}.value ' || NVL( time_waited_micro, 0 )
 FROM
   v\$system_event
 WHERE
-  event = '${label}';
+  event = :bv;
 EOF
     done <<< "${data_attrs[$module]}"
 }
