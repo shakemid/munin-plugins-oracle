@@ -466,7 +466,7 @@ global_attrs[$key]="\
     graph_vlabel microseconds
     graph_info Oracle Wait Events System I/O
 "
-# memo: select event from v$system_event where wait_class = 'System I/O' order by event;
+# memo: select event from v$system_event where wait_class = 'System I/O' or wait_class = 'Commit' order by event;
 data_attrs[$key]="\
     control_file_parallel_write  DERIVE LINE 'control file parallel write'
     control_file_sequential_read DERIVE LINE 'control file sequential read'
