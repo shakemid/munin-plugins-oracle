@@ -25,6 +25,7 @@
     eventwaitconcurrency - To monitor Oracle Wait Event - Concurrency
     eventwaitapplication - To monitor Oracle Wait Event - Application
     eventwaituserio      - To monitor Oracle Wait Event - User I/O
+    eventwaitcluster     - To monitor Oracle Wait Event - Cluster
     asmusage             - To monitor Oracle ASM Disk Group Usage
 
 =head1 CONFIGURATION
@@ -245,7 +246,7 @@ data_attrs[$key]="\
     maximum_sga_size    GAUGE LINE      'Maximum SGA Size'
     fixed_sga_size      GAUGE AREASTACK 'Fixed SGA Size'
     redo_buffers        GAUGE AREASTACK 'Redo Buffers'
-    in-memory_area_size GAUGE AREASTACK 'In-Memory Area Size'
+    in_memory_area_size GAUGE AREASTACK 'In-Memory Area Size'
     shared_pool_size    GAUGE AREASTACK 'Shared Pool Size'
     large_pool_size     GAUGE AREASTACK 'Large Pool Size'
     java_pool_size      GAUGE AREASTACK 'Java Pool Size'
@@ -414,6 +415,41 @@ data_attrs[$key]="\
     external_table_read     DERIVE LINE 'external table read'
     external_table_write    DERIVE LINE 'external table write'
     external_table_open     DERIVE LINE 'external table open'
+"
+getvalue_func[$key]=getvalue_eventwait2
+
+key=eventwaitcluster
+global_attrs[$key]="\
+    graph_title Oracle Wait Event - Cluster
+    graph_category db
+    graph_args --base 1000 --lower-limit 0 --rigid
+    graph_vlabel microseconds
+    graph_info Oracle Wait Event - Cluster
+"
+# memo: select event from v$system_event where wait_class = 'Cluster' order by event;
+data_attrs[$key]="\
+     gc_buffer_busy_acquire         DERIVE LINE 'gc buffer busy acquire'
+     gc_buffer_busy_release         DERIVE LINE 'gc buffer busy release'
+     gc_cr_block_2-way              DERIVE LINE 'gc cr block 2-way'
+     gc_cr_block_busy               DERIVE LINE 'gc cr block busy'
+     gc_cr_block_congested          DERIVE LINE 'gc cr block congested'
+     gc_cr_block_lost               DERIVE LINE 'gc cr block lost'
+     gc_cr_disk_read                DERIVE LINE 'gc cr disk read'
+     gc_cr_failure                  DERIVE LINE 'gc cr failure'
+     gc_cr_grant_2-way              DERIVE LINE 'gc cr grant 2-way'
+     gc_cr_grant_congested          DERIVE LINE 'gc cr grant congested'
+     gc_cr_multi_block_request      DERIVE LINE 'gc cr multi block request'
+     gc_current_block_2-way         DERIVE LINE 'gc current block 2-way'
+     gc_current_block_busy          DERIVE LINE 'gc current block busy'
+     gc_current_block_congested     DERIVE LINE 'gc current block congested'
+     gc_current_block_lost          DERIVE LINE 'gc current block lost'
+     gc_current_grant_2-way         DERIVE LINE 'gc current grant 2-way'
+     gc_current_grant_busy          DERIVE LINE 'gc current grant busy'
+     gc_current_grant_congested     DERIVE LINE 'gc current grant congested'
+     gc_current_multi_block_request DERIVE LINE 'gc current multi block request'
+     gc_current_retry               DERIVE LINE 'gc current retry'
+     gc_current_split               DERIVE LINE 'gc current split'
+     gc_quiesce                     DERIVE LINE 'gc quiesce'
 "
 getvalue_func[$key]=getvalue_eventwait2
 
