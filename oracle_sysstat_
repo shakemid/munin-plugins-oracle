@@ -817,11 +817,13 @@ ${sqlplus_variables}
 VAR bv VARCHAR2(64)
 EXEC :bv := '${label}' 
 SELECT
-  '${field}.value ' || NVL( time_waited_micro, 0 )
+  '${field}.value ' || NVL( se.time_waited_micro, 0 )
 FROM
-  v\$system_event
+  v\$event_name en LEFT JOIN v\$system_event se
+ON
+  en.name = se.event
 WHERE
-  event = :bv;
+  en.name = :bv;
 EOF
     done <<< "${data_attrs[$module]}"
 }
