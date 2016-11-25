@@ -23,9 +23,10 @@
     tablespace           - To monitor Oracle Table Space Usage
     sessionwait          - To monitor Oracle Wait Sessions
     eventwait            - To monitor Oracle Wait Events
-    eventwaitconcurrency - To monitor Oracle Wait Events - Concurrency
     eventwaitapplication - To monitor Oracle Wait Events - Application
+    eventwaitconcurrency - To monitor Oracle Wait Events - Concurrency
     eventwaituserio      - To monitor Oracle Wait Events - User I/O
+    eventwaitsystemio    - To monitor Oracle Wait Events - System I/O
     eventwaitcluster     - To monitor Oracle Wait Events - Cluster
     asmusage             - To monitor Oracle ASM Disk Group Usage
 
@@ -441,6 +442,30 @@ data_attrs[$key]="\
     external_table_read     DERIVE LINE 'external table read'
     external_table_write    DERIVE LINE 'external table write'
     external_table_open     DERIVE LINE 'external table open'
+"
+getvalue_func[$key]=getvalue_eventwait2
+
+key=eventwaitsystemio
+global_attrs[$key]="\
+    graph_title Oracle Wait Events - System I/O
+    graph_category db
+    graph_args --base 1000 --lower-limit 0 --rigid
+    graph_vlabel microseconds
+    graph_info Oracle Wait Events - System I/O
+"
+# memo: select event from v$system_event where wait_class = 'System I/O' order by event;
+data_attrs[$key]="\
+    control_file_parallel_write  DERIVE LINE 'control file parallel write'
+    control_file_sequential_read DERIVE LINE 'control file sequential read'
+    control_file_single_write    DERIVE LINE 'control file single write'
+    db_file_async_i_o_submit     DERIVE LINE 'db file async I/O submit'
+    db_file_parallel_write       DERIVE LINE 'db file parallel write'
+    kfk_async_disk_io            DERIVE LINE 'kfk: async disk IO'
+    log_archive_io               DERIVE LINE 'Log archive I/O'
+    log_file_parallel_write      DERIVE LINE 'log file parallel write'
+    log_file_sequential_read     DERIVE LINE 'log file sequential read'
+    log_file_single_write        DERIVE LINE 'log file single write'
+    log_file_sync                DERIVE LINE 'log file sync'
 "
 getvalue_func[$key]=getvalue_eventwait2
 
