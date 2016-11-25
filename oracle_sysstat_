@@ -132,7 +132,6 @@ global_attrs[$key]="\
     graph_info Oracle Sysstat - Parse Count
 "
 data_attrs[$key]="\
-    user_calls            DERIVE LINE 'user calls'
     parse_count_total     DERIVE LINE 'parse count (total)'
     parse_count_hard      DERIVE LINE 'parse count (hard)'
     parse_count_failures  DERIVE LINE 'parse count (failures)'
@@ -380,12 +379,13 @@ global_attrs[$key]="\
 "
 # memo: select event from v$system_event where wait_class = 'Application' order by event;
 data_attrs[$key]="\
-    enq_ro_fast_object_reuse      DERIVE LINE 'enq: RO - fast object reuse'
     enq_ko_fast_object_checkpoint DERIVE LINE 'enq: KO - fast object checkpoint'
+    enq_ro_fast_object_reuse      DERIVE LINE 'enq: RO - fast object reuse'
     enq_tm_contention             DERIVE LINE 'enq: TM - contention'
     enq_tx_row_lock_contention    DERIVE LINE 'enq: TX - row lock contention'
     enq_ul_contention             DERIVE LINE 'enq: UL - contention'
-    sqlnet_break_reset_to_client  DERIVE LINE 'SQL*Net break/reset to client'
+    sql_net_break_reset_to_client DERIVE LINE 'SQL*Net break/reset to client'
+    sql_net_break_reset_to_dblink DERIVE LINE 'SQL*Net break/reset to dblink'
 "
 getvalue_func[$key]=getvalue_eventwait2
 
@@ -450,6 +450,7 @@ data_attrs[$key]="\
     gc_current_retry               DERIVE LINE 'gc current retry'
     gc_current_split               DERIVE LINE 'gc current split'
     gc_quiesce                     DERIVE LINE 'gc quiesce'
+    gc_remaster                    DERIVE LINE 'gc remaster'
 "
 getvalue_func[$key]=getvalue_eventwait2
 
