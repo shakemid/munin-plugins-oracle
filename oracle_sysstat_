@@ -14,6 +14,7 @@
     tablescan            - To monitor Oracle Sysstat - Table Scans
     transaction          - To monitor Oracle Sysstat - Transactions
     enqueue              - To monitor Oracle Sysstat - Enqueues
+    redolog              - To monitor Oracle Sysstat - Redo Log
     physicaliops         - To monitor Oracle Sysstat - Physical I/O Requests
     physicalrw           - To monitor Oracle Sysstat - Physical Read/Write
     sgainfo              - To monitor Oracle Memory SGA
@@ -230,6 +231,21 @@ data_attrs[$key]="\
     enqueue_waits       DERIVE LINE 'enqueue waits'
     enqueue_timeouts    DERIVE LINE 'enqueue timeouts'
     enqueue_deadlocks   DERIVE LINE 'enqueue deadlocks'
+"
+getvalue_func[$key]=getvalue_sysstat
+
+key=redolog
+global_attrs[$key]="\
+    graph_title Oracle Sysstat - Redo Log
+    graph_category db
+    graph_args --base 1000 --lower-limit 0 --rigid
+    graph_vlabel count per second
+    graph_info Oracle Sysstat - Redo Log
+"
+data_attrs[$key]="\
+    redo_entries                   DERIVE LINE 'redo entries'
+    redo_buffer_allocation_retries DERIVE LINE 'redo buffer allocation retries'
+    redo_log_space_requests        DERIVE LINE 'redo log space requests'
 "
 getvalue_func[$key]=getvalue_sysstat
 
