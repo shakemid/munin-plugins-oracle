@@ -19,6 +19,7 @@
     physicalrw           - To monitor Oracle Sysstat - Physical Read/Write
     sgainfo              - To monitor Oracle Memory SGA
     pgastat              - To monitor Oracle Memory PGA
+    loginuser            - To monitor Oracle Login Users
     cachehit             - To monitor Oracle Cache Hit Ratio
     tablespace           - To monitor Oracle Table Space Usage
     sessionwait          - To monitor Oracle Wait Sessions
@@ -286,6 +287,18 @@ data_attrs[$key]="\
     pga_inuse     GAUGE AREA 'total PGA inuse'
 "
 getvalue_func[$key]=getvalue_pgastat
+
+key=loginuser
+global_attrs[$key]="\
+    graph_title Oracle Login Users
+    graph_category db
+    graph_args --base 1000 --lower-limit 0 --rigid
+    graph_vlabel count
+    graph_info Oracle Login Users
+"
+data_attrs[$key]=""
+getfield_func[$key]=getfield_loginuser
+getvalue_func[$key]=getvalue_loginuser
 
 key=cachehit
 global_attrs[$key]="\
@@ -640,6 +653,51 @@ EOF
     done <<< "${data_attrs[$module]}"
 }
 
+getfield_loginuser() {
+    local type_default=GAUGE
+    local draw_default=LINE
+
+    local line
+    while read -r line
+    do
+        data_attrs[$module]="${data_attrs[$module]}
+        $line ${type_default} ${draw_default} '$line'"
+    done < <( exec ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
+${sqlplus_variables}
+SELECT
+  regexp_replace( username, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' )
+FROM
+  dba_users
+WHERE
+  account_status = 'OPEN'
+ORDER BY
+  username;
+EOF
+)
+}
+
+getvalue_loginuser() {
+    ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
+${sqlplus_variables}
+SELECT
+  regexp_replace( du.username, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) || '.value ' ||
+  count(vs.username)
+FROM 
+  ( SELECT
+      username
+    FROM
+      dba_users
+    WHERE
+      account_status = 'OPEN'
+  ) du
+  LEFT JOIN v\$session vs
+ON
+  du.username = vs.username
+GROUP BY
+  du.username;
+EOF
+}
+
 getvalue_cachehit() {
     ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
@@ -678,8 +736,7 @@ getfield_tablespace() {
     while read -r line
     do
         data_attrs[$module]="${data_attrs[$module]}
-        $line ${type_default} ${draw_default} '$line'
-"
+        $line ${type_default} ${draw_default} '$line'"
     done < <( exec ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
@@ -728,8 +785,7 @@ getfield_asmusage() {
     while read -r line
     do
         data_attrs[$module]="${data_attrs[$module]}
-        $line ${type_default} ${draw_default} '$line'
-"
+        $line ${type_default} ${draw_default} '$line'"
     done < <( exec ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
