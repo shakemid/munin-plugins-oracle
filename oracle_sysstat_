@@ -7,16 +7,16 @@
 
   oracle_sysstat_* - Munin plugin to monitor Oracle Statistics
 
-    cursor               - To monitor Oracle Sysstat - Open Cursor
-    execute              - To monitor Oracle Sysstat - Execute Count
-    parse                - To monitor Oracle Sysstat - Parse Count
-    sort                 - To monitor Oracle Sysstat - Sorts
-    tablescan            - To monitor Oracle Sysstat - Table Scans
-    transaction          - To monitor Oracle Sysstat - Transactions
-    enqueue              - To monitor Oracle Sysstat - Enqueues
-    redolog              - To monitor Oracle Sysstat - Redo Log
-    physicaliops         - To monitor Oracle Sysstat - Physical I/O Requests
-    physicalrw           - To monitor Oracle Sysstat - Physical Read/Write
+    cursor               - To monitor Oracle Sysstat Open Cursor
+    execute              - To monitor Oracle Sysstat Execute Count
+    parse                - To monitor Oracle Sysstat Parse Count
+    sort                 - To monitor Oracle Sysstat Sorts
+    tablescan            - To monitor Oracle Sysstat Table Scans
+    transaction          - To monitor Oracle Sysstat Transactions
+    enqueue              - To monitor Oracle Sysstat Enqueues
+    redolog              - To monitor Oracle Sysstat Redo Log
+    physicaliops         - To monitor Oracle Sysstat Physical I/O Requests
+    physicalrw           - To monitor Oracle Sysstat Physical Read/Write
     sgainfo              - To monitor Oracle Memory SGA
     pgastat              - To monitor Oracle Memory PGA
     loginuser            - To monitor Oracle Login Users
@@ -24,11 +24,11 @@
     tablespace           - To monitor Oracle Table Space Usage
     sessionwait          - To monitor Oracle Wait Sessions
     eventwait            - To monitor Oracle Wait Events
-    eventwaitapplication - To monitor Oracle Wait Events - Application
-    eventwaitconcurrency - To monitor Oracle Wait Events - Concurrency
-    eventwaituserio      - To monitor Oracle Wait Events - User I/O
-    eventwaitsystemio    - To monitor Oracle Wait Events - System I/O
-    eventwaitcluster     - To monitor Oracle Wait Events - Cluster
+    eventwaitapplication - To monitor Oracle Wait Events Application
+    eventwaitconcurrency - To monitor Oracle Wait Events Concurrency
+    eventwaituserio      - To monitor Oracle Wait Events User I/O
+    eventwaitsystemio    - To monitor Oracle Wait Events System I/O
+    eventwaitcluster     - To monitor Oracle Wait Events Cluster
     asmusage             - To monitor Oracle ASM Disk Group Usage
 
 =head1 CONFIGURATION
@@ -100,11 +100,11 @@ declare -A getvalue_func # required
 
 key=cursor
 global_attrs[$key]="\
-    graph_title Oracle Sysstat - Open Cursors
+    graph_title Oracle Sysstat Open Cursors
     graph_category db
     graph_args --base 1000 --lower-limit 0 --rigid
     graph_vlabel count
-    graph_info Oracle Sysstat - Open Cursors
+    graph_info Oracle Sysstat Open Cursors
 "
 data_attrs[$key]="\
     open_cursor GAUGE LINE 'opened cursors current'
@@ -113,11 +113,11 @@ getvalue_func[$key]=getvalue_sysstat
 
 key=execute
 global_attrs[$key]="\
-    graph_title Oracle Sysstat - Execute Count
+    graph_title Oracle Sysstat Execute Count
     graph_category db
     graph_args --base 1000 --lower-limit 0 --rigid
     graph_vlabel count per second
-    graph_info Oracle Sysstat - Execute Count
+    graph_info Oracle Sysstat Execute Count
 "
 data_attrs[$key]="\
     execute_count    DERIVE LINE 'execute count'
@@ -128,11 +128,11 @@ getvalue_func[$key]=getvalue_sysstat
 
 key=parse
 global_attrs[$key]="\
-    graph_title Oracle Sysstat - Parse Count
+    graph_title Oracle Sysstat Parse Count
     graph_category db
     graph_args --base 1000 --lower-limit 0 --rigid
     graph_vlabel count per second
-    graph_info Oracle Sysstat - Parse Count
+    graph_info Oracle Sysstat Parse Count
 "
 data_attrs[$key]="\
     parse_count_total     DERIVE LINE 'parse count (total)'
@@ -144,11 +144,11 @@ getvalue_func[$key]=getvalue_sysstat
 
 key=physicaliops
 global_attrs[$key]="\
-    graph_title Oracle Sysstat - Physical I/O Requests
+    graph_title Oracle Sysstat Physical I/O Requests
     graph_category db
     graph_args --base 1000 --lower-limit 0 --rigid
     graph_vlabel iops
-    graph_info Oracle Sysstat - Physical I/O Requests
+    graph_info Oracle Sysstat Physical I/O Requests
 "
 data_attrs[$key]="\
     physical_read_total        DERIVE LINE2 'physical read total IO requests'
@@ -162,11 +162,11 @@ getvalue_func[$key]=getvalue_sysstat
 
 key=physicalrw
 global_attrs[$key]="\
-    graph_title Oracle Sysstat - Physical Read/Write
+    graph_title Oracle Sysstat Physical Read/Write
     graph_category db
     graph_args --base 1024 --lower-limit 0 --rigid
     graph_vlabel bytes per second
-    graph_info Oracle Sysstat - Physical Read/Write
+    graph_info Oracle Sysstat Physical Read/Write
 "
 data_attrs[$key]="\
     physical_read_total  DERIVE LINE2 'physical read total bytes'
@@ -178,7 +178,7 @@ getvalue_func[$key]=getvalue_sysstat
 
 key=sort
 global_attrs[$key]="\
-    graph_title Oracle Sysstat - Sorts
+    graph_title Oracle Sysstat Sorts
     graph_category db
     graph_args --base 1000 --lower-limit 0 --rigid
     graph_vlabel count per second
@@ -192,11 +192,11 @@ getvalue_func[$key]=getvalue_sysstat
 
 key=tablescan
 global_attrs[$key]="\
-    graph_title Oracle Sysstat - Table Scans
+    graph_title Oracle Sysstat Table Scans
     graph_category db
     graph_args --base 1000 --lower-limit 0 --rigid
     graph_vlabel count per second
-    graph_info Oracle Sysstat - Table Scans
+    graph_info Oracle Sysstat Table Scans
 "
 data_attrs[$key]="\
     table_scans_short_tables DERIVE LINE 'table scans (short tables)'
@@ -206,11 +206,11 @@ getvalue_func[$key]=getvalue_sysstat
 
 key=transaction
 global_attrs[$key]="\
-    graph_title Oracle Sysstat - Transactions
+    graph_title Oracle Sysstat Transactions
     graph_category db
     graph_args --base 1000 --lower-limit 0 --rigid
     graph_vlabel count per second
-    graph_info Oracle Sysstat - Transactions
+    graph_info Oracle Sysstat Transactions
 "
 data_attrs[$key]="\
     user_commits   DERIVE LINE 'user commits'
@@ -220,11 +220,11 @@ getvalue_func[$key]=getvalue_sysstat
 
 key=enqueue
 global_attrs[$key]="\
-    graph_title Oracle Sysstat - Enqueues
+    graph_title Oracle Sysstat Enqueues
     graph_category db
     graph_args --base 1000 --lower-limit 0 --rigid
     graph_vlabel count per second
-    graph_info Oracle Sysstat - Enqueues
+    graph_info Oracle Sysstat Enqueues
 "
 data_attrs[$key]="\
     enqueue_requests    DERIVE LINE 'enqueue requests'
@@ -238,11 +238,11 @@ getvalue_func[$key]=getvalue_sysstat
 
 key=redolog
 global_attrs[$key]="\
-    graph_title Oracle Sysstat - Redo Log
+    graph_title Oracle Sysstat Redo Log
     graph_category db
     graph_args --base 1000 --lower-limit 0 --rigid
     graph_vlabel count per second
-    graph_info Oracle Sysstat - Redo Log
+    graph_info Oracle Sysstat Redo Log
 "
 data_attrs[$key]="\
     redo_entries                   DERIVE LINE 'redo entries'
@@ -370,11 +370,11 @@ getvalue_func[$key]=getvalue_eventwait
 
 key=eventwaitconcurrency
 global_attrs[$key]="\
-    graph_title Oracle Wait Events - Concurrency
+    graph_title Oracle Wait Events Concurrency
     graph_category db
     graph_args --base 1000 --lower-limit 0 --rigid
     graph_vlabel microseconds
-    graph_info Oracle Wait Events - Concurrency
+    graph_info Oracle Wait Events Concurrency
 "
 # memo: select event from v$system_event where wait_class = 'Concurrency' order by event;
 data_attrs[$key]="\
@@ -401,11 +401,11 @@ getvalue_func[$key]=getvalue_eventwait2
 
 key=eventwaitapplication
 global_attrs[$key]="\
-    graph_title Oracle Wait Events - Application
+    graph_title Oracle Wait Events Application
     graph_category db
     graph_args --base 1000 --lower-limit 0 --rigid
     graph_vlabel microseconds
-    graph_info Oracle Wait Events - Application
+    graph_info Oracle Wait Events Application
 "
 # memo: select event from v$system_event where wait_class = 'Application' order by event;
 data_attrs[$key]="\
@@ -431,11 +431,11 @@ getvalue_func[$key]=getvalue_eventwait2
 
 key=eventwaituserio
 global_attrs[$key]="\
-    graph_title Oracle Wait Events - User I/O
+    graph_title Oracle Wait Events User I/O
     graph_category db
     graph_args --base 1000 --lower-limit 0 --rigid
     graph_vlabel microseconds
-    graph_info Oracle Wait Events - User I/O
+    graph_info Oracle Wait Events User I/O
 "
 # memo: select event from v$system_event where wait_class = 'User I/O' order by event;
 data_attrs[$key]="\
@@ -460,11 +460,11 @@ getvalue_func[$key]=getvalue_eventwait2
 
 key=eventwaitsystemio
 global_attrs[$key]="\
-    graph_title Oracle Wait Events - System I/O
+    graph_title Oracle Wait Events System I/O
     graph_category db
     graph_args --base 1000 --lower-limit 0 --rigid
     graph_vlabel microseconds
-    graph_info Oracle Wait Events - System I/O
+    graph_info Oracle Wait Events System I/O
 "
 # memo: select event from v$system_event where wait_class = 'System I/O' order by event;
 data_attrs[$key]="\
@@ -484,11 +484,11 @@ getvalue_func[$key]=getvalue_eventwait2
 
 key=eventwaitcluster
 global_attrs[$key]="\
-    graph_title Oracle Wait Events - Cluster
+    graph_title Oracle Wait Events Cluster
     graph_category db
     graph_args --base 1000 --lower-limit 0 --rigid
     graph_vlabel microseconds
-    graph_info Oracle Wait Events - Cluster
+    graph_info Oracle Wait Events Cluster
 "
 # memo: select event from v$system_event where wait_class = 'Cluster' order by event;
 data_attrs[$key]="\
