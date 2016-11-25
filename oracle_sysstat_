@@ -379,13 +379,23 @@ global_attrs[$key]="\
 "
 # memo: select event from v$system_event where wait_class = 'Application' order by event;
 data_attrs[$key]="\
-    enq_ko_fast_object_checkpoint DERIVE LINE 'enq: KO - fast object checkpoint'
-    enq_ro_fast_object_reuse      DERIVE LINE 'enq: RO - fast object reuse'
-    enq_tm_contention             DERIVE LINE 'enq: TM - contention'
-    enq_tx_row_lock_contention    DERIVE LINE 'enq: TX - row lock contention'
-    enq_ul_contention             DERIVE LINE 'enq: UL - contention'
-    sql_net_break_reset_to_client DERIVE LINE 'SQL*Net break/reset to client'
-    sql_net_break_reset_to_dblink DERIVE LINE 'SQL*Net break/reset to dblink'
+    enq_ko_fast_object_checkpoint         DERIVE LINE 'enq: KO - fast object checkpoint'
+    enq_pw_flush_prewarm_buffers          DERIVE LINE 'enq: PW - flush prewarm buffers'
+    enq_rc_result_cache_contention        DERIVE LINE 'enq: RC - Result Cache: Contention'
+    enq_ro_contention                     DERIVE LINE 'enq: RO - contention'
+    enq_ro_fast_object_reuse              DERIVE LINE 'enq: RO - fast object reuse'
+    enq_tm_contention                     DERIVE LINE 'enq: TM - contention'
+    enq_tx_row_lock_contention            DERIVE LINE 'enq: TX - row lock contention'
+    enq_ul_contention                     DERIVE LINE 'enq: UL - contention'
+    external_procedure_call               DERIVE LINE 'External Procedure call'
+    external_procedure_initial_connection DERIVE LINE 'External Procedure initial connection'
+    olap_dml_sleep                        DERIVE LINE 'OLAP DML Sleep'
+    repl_apply_apply_ddl                  DERIVE LINE 'REPL Apply: apply DDL'
+    repl_capture_filter_callback_ruleset  DERIVE LINE 'REPL Capture: filter callback ruleset'
+    sql_net_break_reset_to_client         DERIVE LINE 'SQL*Net break/reset to client'
+    sql_net_break_reset_to_dblink         DERIVE LINE 'SQL*Net break/reset to dblink'
+    wait_for_table_lock                   DERIVE LINE 'Wait for Table Lock'
+    wcr_replay_lock_order                 DERIVE LINE 'WCR: replay lock order'
 "
 getvalue_func[$key]=getvalue_eventwait2
 
