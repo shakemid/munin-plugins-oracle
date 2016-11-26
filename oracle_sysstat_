@@ -573,15 +573,15 @@ config() {
     exit 0
 }
 
+getvalue() {
+    ${getvalue_func[$module]}
+    exit 0
+}
+
 getfield() {
     if [ -n "${getfield_func[$module]:-}" ]; then
         ${getfield_func[$module]}
     fi
-}
-
-getvalue() {
-    ${getvalue_func[$module]}
-    exit 0
 }
 
 getvalue_sysstat() {
@@ -803,7 +803,8 @@ getfield_asmusage() {
     done < <( command ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
-  regexp_replace( name, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' )
+  regexp_replace( name, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) ||
+  ' ''' || name || ''''
 FROM
   v\$asm_diskgroup
 ORDER BY
