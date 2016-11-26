@@ -660,7 +660,7 @@ getfield_sessionuser() {
     local line
     while read -r line
     do
-        data_attrs[$module]="${data_attrs[$module]}"$'\n'"$line ${type_default} ${draw_default} '$line'"
+        data_attrs[$module]="${data_attrs[$module]}$line ${type_default} ${draw_default} '$line'"$'\n'
     done < <( exec ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
@@ -734,7 +734,7 @@ getfield_tablespace() {
     local line
     while read -r line
     do
-        data_attrs[$module]="${data_attrs[$module]}"$'\n'"$line ${type_default} ${draw_default} '$line'"
+        data_attrs[$module]="${data_attrs[$module]}$line ${type_default} ${draw_default} '$line'"$'\n'
     done < <( command ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
@@ -782,7 +782,7 @@ getfield_asmusage() {
     local line
     while read -r line
     do
-        data_attrs[$module]="${data_attrs[$module]}"$'\n'"$line ${type_default} ${draw_default} '$line'"
+        data_attrs[$module]="${data_attrs[$module]}$line ${type_default} ${draw_default} '$line'"$'\n'
     done < <( command ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
@@ -815,7 +815,7 @@ getfield_sessionwait() {
     local line
     while read -r line
     do
-        data_attrs[$module]="${data_attrs[$module]}"$'\n'"$( clean_fieldname $line ) ${type_default} ${draw_default} '$line'"
+        data_attrs[$module]="${data_attrs[$module]}$( clean_fieldname $line ) ${type_default} ${draw_default} '$line'"$'\n'
     done < <( command ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
@@ -864,7 +864,7 @@ getfield_eventwait() {
     local line
     while read -r line
     do
-        data_attrs[$module]="${data_attrs[$module]}"$'\n'"$( clean_fieldname $line ) ${type_default} ${draw_default} '$line'"
+        data_attrs[$module]="${data_attrs[$module]}$( clean_fieldname $line ) ${type_default} ${draw_default} '$line'"$'\n'
     done < <( command ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
