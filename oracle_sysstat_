@@ -838,30 +838,38 @@ getvalue_sessionwait() {
     ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
-  regexp_replace( wait_class, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) || '.value ' ||
-  count(wait_class) 
+  regexp_replace( en.wait_class, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) || '.value ' ||
+  NVL( count(se.wait_class), 0 )
 FROM
-  v\$system_event
-WHERE
-  wait_class NOT IN ( 'Other', 'Idle' )
+  ( SELECT
+      wait_class
+    FROM
+      v\$event_name
+    WHERE
+      wait_class NOT IN ( 'Other', 'Idle' )
+    GROUP BY
+      wait_class
+  ) en
+  LEFT JOIN v\$session se
+ON
+  en.wait_class = se.wait_class AND 
+  se.username is not null
 GROUP BY
-  wait_class
-ORDER BY
-  wait_class
+  en.wait_class
 ;
 SELECT 
   'Other.value ' || count(wait_class)
 FROM
-  v\$system_event
+  v\$session
 WHERE
-  wait_class = 'Other'
+  wait_class = 'Other' AND username is not null
 ;
 SELECT 
   'Idle.value ' || count(wait_class)
 FROM
-  v\$system_event
+  v\$session
 WHERE
-  wait_class = 'Idle'
+  wait_class = 'Idle' AND username is not null
 ;
 EOF
 }
@@ -895,16 +903,23 @@ getvalue_eventwait() {
     ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
-  regexp_replace( wait_class, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) || '.value ' ||
-  NVL( SUM(time_waited_micro), 0 )
+  regexp_replace( en.wait_class, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) || '.value ' ||
+  NVL( SUM(se.time_waited_micro), 0 )
 FROM
-  v\$system_event
-WHERE
-  wait_class NOT IN ( 'Other', 'Idle' )
+  ( SELECT
+      wait_class
+    FROM
+      v\$event_name
+    WHERE
+      wait_class NOT IN ( 'Other', 'Idle' )
+    GROUP BY
+      wait_class
+  ) en
+  LEFT JOIN v\$system_event se
+ON
+  en.wait_class = se.wait_class
 GROUP BY
-  wait_class
-ORDER BY
-  wait_class
+  en.wait_class
 ;
 SELECT 
   'Other.value ' || NVL( SUM(time_waited_micro), 0 )
