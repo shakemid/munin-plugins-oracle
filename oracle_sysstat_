@@ -713,23 +713,18 @@ FROM
 WHERE
   a.name = 'physical reads' AND
   b.name = 'db block gets' AND
-  c.name = 'consistent gets';
-EOF
-
-    ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
-${sqlplus_variables}
+  c.name = 'consistent gets'
+;
 SELECT
   'lib_hitratio.value ' || round( sum(pins) / ( sum(pins) + sum(reloads) ) * 100 )
 FROM
-  v\$librarycache;
-EOF
-
-    ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
-${sqlplus_variables}
+  v\$librarycache
+;
 SELECT
   'dict_hitratio.value ' || round( ( 1 - sum(getmisses) / sum(gets) ) * 100 )
 FROM
-  v\$rowcache;
+  v\$rowcache
+;
 EOF
 }
 
