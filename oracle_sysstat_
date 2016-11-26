@@ -675,7 +675,7 @@ EOF
 }
 
 getfield_sessionuser() {
-    data_attrs[$module]="$( ${sqlplus} ${sqlplus_opts} ${oracle_auth} <<EOF
+    data_attrs[$module]="$( ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
   regexp_replace( username, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) ||
@@ -738,7 +738,7 @@ EOF
 }
 
 getfield_tablespace() {
-    data_attrs[$module]="$( ${sqlplus} ${sqlplus_opts} ${oracle_auth} <<EOF
+    data_attrs[$module]="$( ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
   regexp_replace( tablespace_name, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) ||
@@ -780,7 +780,7 @@ EOF
 }
 
 getfield_asmusage() {
-    data_attrs[$module]="$( ${sqlplus} ${sqlplus_opts} ${oracle_auth} <<EOF
+    data_attrs[$module]="$( ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
   regexp_replace( name, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) ||
@@ -807,7 +807,7 @@ EOF
 }
 
 getfield_sessionwait() {
-    data_attrs[$module]="$( ${sqlplus} ${sqlplus_opts} ${oracle_auth} <<EOF
+    data_attrs[$module]="$( ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
   regexp_replace( wait_class, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) ||
@@ -867,7 +867,7 @@ EOF
 }
 
 getfield_eventwait() {
-    data_attrs[$module]="$( ${sqlplus} ${sqlplus_opts} ${oracle_auth} <<EOF
+    data_attrs[$module]="$( ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
   regexp_replace( wait_class, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) ||
