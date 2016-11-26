@@ -471,7 +471,7 @@ data_attrs[$key]="\
     control_file_parallel_write  DERIVE LINE 'control file parallel write'
     control_file_sequential_read DERIVE LINE 'control file sequential read'
     control_file_single_write    DERIVE LINE 'control file single write'
-    db_file_async_io_submit     DERIVE LINE 'db file async I/O submit'
+    db_file_async_io_submit      DERIVE LINE 'db file async I/O submit'
     db_file_parallel_write       DERIVE LINE 'db file parallel write'
     kfk_async_disk_io            DERIVE LINE 'kfk: async disk IO'
     log_archive_io               DERIVE LINE 'Log archive I/O'
