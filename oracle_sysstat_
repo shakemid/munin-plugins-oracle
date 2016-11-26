@@ -839,7 +839,7 @@ getvalue_sessionwait() {
 ${sqlplus_variables}
 SELECT
   regexp_replace( en.wait_class, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) || '.value ' ||
-  NVL( count(se.wait_class), 0 )
+  count(se.wait_class)
 FROM
   ( SELECT
       wait_class
