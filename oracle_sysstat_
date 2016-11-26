@@ -204,6 +204,21 @@ data_attrs[$key]="\
 "
 getvalue_func[$key]=getvalue_sysstat
 
+key=tablefetch
+global_attrs[$key]="\
+    graph_title Oracle Sysstat Table Fetch Rows
+    graph_category db
+    graph_args --base 1000 --lower-limit 0 --rigid
+    graph_vlabel count per second
+    graph_info Oracle Sysstat Table Scans
+"
+data_attrs[$key]="\
+    table_fetch_by_rowid   DERIVE LINE 'table fetch by rowid'
+    table_scan_rows_gotten DERIVE LINE 'table scan rows gotten'
+"
+getvalue_func[$key]=getvalue_sysstat
+
+getvalue_func[$key]=getvalue_sysstat
 key=transaction
 global_attrs[$key]="\
     graph_title Oracle Sysstat Transactions
