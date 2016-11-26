@@ -595,14 +595,16 @@ getvalue_sysstat() {
 
         ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
-VAR bv VARCHAR2(64)
-EXEC :bv := '${label}' 
+VAR vf VARCHAR2(64)
+VAR vl VARCHAR2(64)
+EXEC :vf := '${field}' 
+EXEC :vl := '${label}' 
 SELECT
-  '${field}.value ' || value
+  :vf || '.value ' || value
 FROM
   v\$sysstat
 WHERE
-  name = :bv;
+  name = :vl;
 EOF
     done <<< "${data_attrs[$module]}"
 }
@@ -618,14 +620,16 @@ getvalue_sgainfo() {
 
         ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
-VAR bv VARCHAR2(64)
-EXEC :bv := '${label}' 
+VAR vf VARCHAR2(64)
+VAR vl VARCHAR2(64)
+EXEC :vf := '${field}' 
+EXEC :vl := '${label}' 
 SELECT
-  '${field}.value ' || bytes
+  :vf || '.value ' || bytes
 FROM
   v\$sgainfo
 WHERE
-  name = :bv;
+  name = :vl;
 EOF
     done <<< "${data_attrs[$module]}"
 }
@@ -641,14 +645,16 @@ getvalue_pgastat() {
 
         ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
-VAR bv VARCHAR2(64)
-EXEC :bv := '${label}' 
+VAR vf VARCHAR2(64)
+VAR vl VARCHAR2(64)
+EXEC :vf := '${field}' 
+EXEC :vl := '${label}' 
 SELECT
-  '${field}.value ' || value
+  :vf || '.value ' || value
 FROM
   v\$pgastat
 WHERE
-  name = :bv;
+  name = :vl;
 EOF
     done <<< "${data_attrs[$module]}"
 }
@@ -967,16 +973,18 @@ getvalue_eventwait2() {
 
         ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
-VAR bv VARCHAR2(64)
-EXEC :bv := '${label}' 
+VAR vf VARCHAR2(64)
+VAR vl VARCHAR2(64)
+EXEC :vf := '${field}' 
+EXEC :vl := '${label}' 
 SELECT
-  '${field}.value ' || NVL( se.time_waited_micro, 0 )
+  :vf || '.value ' || NVL( se.time_waited_micro, 0 )
 FROM
   v\$event_name en LEFT JOIN v\$system_event se
 ON
   en.name = se.event
 WHERE
-  en.name = :bv;
+  en.name = :vl;
 EOF
     done <<< "${data_attrs[$module]}"
 }
