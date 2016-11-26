@@ -465,12 +465,10 @@ autoconf() {
     else
         echo "no (failed to find executable 'sqlplus')"
     fi
-    exit 0
 }
 
 suggest() {
     echo ${!global_attrs[@]} | tr ' ' '\n' | sort
-    exit 0
 }
 
 config() {
@@ -495,13 +493,10 @@ config() {
     done <<< "${data_attrs[$module]}"
 
     echo graph_order ${fields[@]}
-
-    exit 0
 }
 
 getvalue() {
     eval "${getvalue_func[$module]}"
-    exit 0
 }
 
 getfield() {
@@ -884,3 +879,5 @@ config)
     getvalue
     ;;
 esac
+
+exit 0
