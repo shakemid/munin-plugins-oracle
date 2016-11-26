@@ -11,6 +11,7 @@
     execute              - To monitor Oracle Sysstat Execute Count
     parse                - To monitor Oracle Sysstat Parse Count
     sort                 - To monitor Oracle Sysstat Sorts
+    tablefetch           - To monitor Oracle Sysstat Table Fetch Rows
     tablescan            - To monitor Oracle Sysstat Table Scans
     transaction          - To monitor Oracle Sysstat Transactions
     enqueue              - To monitor Oracle Sysstat Enqueues
