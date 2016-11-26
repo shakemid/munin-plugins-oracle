@@ -288,18 +288,6 @@ data_attrs[$key]="\
 "
 getvalue_func[$key]=getvalue_pgastat
 
-key=sessionuser
-global_attrs[$key]="\
-    graph_title Oracle Session Users
-    graph_category db
-    graph_args --base 1000 --lower-limit 0 --rigid
-    graph_vlabel count
-    graph_info Oracle Login Users
-"
-data_attrs[$key]=""
-getfield_func[$key]=getfield_sessionuser
-getvalue_func[$key]=getvalue_sessionuser
-
 key=cachehit
 global_attrs[$key]="\
     graph_title Oracle Cache Hit Ratio
@@ -343,6 +331,18 @@ global_attrs[$key]="\
 data_attrs[$key]=""
 getfield_func[$key]=getfield_asmusage
 getvalue_func[$key]=getvalue_asmusage
+
+key=sessionuser
+global_attrs[$key]="\
+    graph_title Oracle Session Users
+    graph_category db
+    graph_args --base 1000 --lower-limit 0 --rigid
+    graph_vlabel count
+    graph_info Oracle Session Users
+"
+data_attrs[$key]=""
+getfield_func[$key]=getfield_sessionuser
+getvalue_func[$key]=getvalue_sessionuser
 
 key=sessionwait
 global_attrs[$key]="\
