@@ -494,7 +494,7 @@ config() {
 
     # print data source attributes
     local line t fields field type draw label
-    while read -r line
+    while IFS= read -r line
     do
         eval 't=(' "$line" ')'
         field="${t[0]}"
@@ -524,7 +524,7 @@ getvalue() {
 
 getvalue_sysstat() {
     local line t field label
-    while read -r line
+    while IFS= read -r line
     do
         eval 't=(' "$line" ')'
         field="${t[0]}"
@@ -549,7 +549,7 @@ EOF
 
 getvalue_sgainfo() {
     local line t field label
-    while read -r line
+    while IFS= read -r line
     do
         eval 't=(' "$line" ')'
         field="${t[0]}"
@@ -574,7 +574,7 @@ EOF
 
 getvalue_pgastat() {
     local line t field label
-    while read -r line
+    while IFS= read -r line
     do
         eval 't=(' "$line" ')'
         field="${t[0]}"
