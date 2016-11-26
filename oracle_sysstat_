@@ -571,7 +571,7 @@ config() {
     local line t fields field type draw label
     while read -r line
     do
-        eval t=\( "$line" \)
+        eval 't=(' "$line" ')'
         field="${t[0]}"
         [ -z "$field" ] && continue
         fields+=( $field )
@@ -604,7 +604,7 @@ getvalue_sysstat() {
     local line t field label
     while read -r line
     do
-        eval t=\( "$line" \)
+        eval 't=(' "$line" ')'
         field="${t[0]}"
         [ -z "$field" ] && continue
         label="${t[3]}"
@@ -629,7 +629,7 @@ getvalue_sgainfo() {
     local line t field label
     while read -r line
     do
-        eval t=\( "$line" \)
+        eval 't=(' "$line" ')'
         field="${t[0]}"
         [ -z "$field" ] && continue
         label="${t[3]}"
@@ -654,7 +654,7 @@ getvalue_pgastat() {
     local line t field label
     while read -r line
     do
-        eval t=\( "$line" \)
+        eval 't=(' "$line" ')'
         field="${t[0]}"
         [ -z "$field" ] && continue
         label="${t[3]}"
@@ -922,7 +922,7 @@ getvalue_eventwait2() {
     local line t field label
     while read -r line
     do
-        eval t=\( "$line" \)
+        eval 't=(' "$line" ')'
         field="${t[0]}"
         [ -z "$field" ] && continue
         label="${t[3]}"
