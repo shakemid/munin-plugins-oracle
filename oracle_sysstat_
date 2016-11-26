@@ -471,7 +471,7 @@ data_attrs[$key]="\
     control_file_parallel_write  DERIVE LINE 'control file parallel write'
     control_file_sequential_read DERIVE LINE 'control file sequential read'
     control_file_single_write    DERIVE LINE 'control file single write'
-    db_file_async_i_o_submit     DERIVE LINE 'db file async I/O submit'
+    db_file_async_io_submit     DERIVE LINE 'db file async I/O submit'
     db_file_parallel_write       DERIVE LINE 'db file parallel write'
     kfk_async_disk_io            DERIVE LINE 'kfk: async disk IO'
     log_archive_io               DERIVE LINE 'Log archive I/O'
@@ -738,11 +738,11 @@ getfield_tablespace() {
     done < <( command ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
-   regexp_replace( tablespace_name, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' )
+  regexp_replace( tablespace_name, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' )
 FROM
-   dba_data_files
+  dba_data_files
 ORDER BY
-   tablespace_name;
+  tablespace_name;
 EOF
 )
 }
@@ -786,11 +786,11 @@ getfield_asmusage() {
     done < <( command ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
-   regexp_replace( name, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' )
+  regexp_replace( name, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' )
 FROM
-   v\$asm_diskgroup
+  v\$asm_diskgroup
 ORDER BY
-   name;
+  name;
 EOF
 )
 }
@@ -799,12 +799,12 @@ getvalue_asmusage() {
     ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
-   regexp_replace( name, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) || '.value ' ||
-   round( ( total_mb - free_mb ) / total_mb * 100 )
+  regexp_replace( name, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) || '.value ' ||
+  round( ( total_mb - free_mb ) / total_mb * 100 )
 FROM
-   v\$asm_diskgroup
+  v\$asm_diskgroup
 ORDER BY
-   name;
+  name;
 EOF
 }
 
