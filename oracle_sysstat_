@@ -768,7 +768,7 @@ VAR vl VARCHAR2(64)
 EXEC :vl := '${waitclass}' 
 SELECT
   REGEXP_REPLACE( name, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) ||
-  ' DERIVE LINE ' || '''' || name || ''''
+  ' DERIVE LINE ' || '''' || SUBSTR( name, 1, 45 ) || ''''
 FROM
   v\$event_name 
 WHERE
