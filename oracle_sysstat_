@@ -17,7 +17,8 @@
     enqueue              - To monitor Oracle Sysstat Enqueues
     redolog              - To monitor Oracle Sysstat Redo Log
     physicaliops         - To monitor Oracle Sysstat Physical I/O Requests
-    physicalrw           - To monitor Oracle Sysstat Physical Read/Write
+    physicalrw           - To monitor Oracle Sysstat Physical Read/Write Bytes
+    netrw                - To monitor Oracle Sysstat Network Send/Receive Bytes
     sgainfo              - To monitor Oracle Memory SGA
     pgastat              - To monitor Oracle Memory PGA
     cachehit             - To monitor Oracle Cache Hit Ratio
@@ -252,17 +253,33 @@ getvalue_func[$key]=getvalue_sysstat
 
 key=physicalrw
 global_attrs[$key]="\
-    graph_title Oracle Sysstat Physical Read/Write
+    graph_title Oracle Sysstat Physical Read/Write Bytes
     graph_category db
     graph_args --base 1024 --lower-limit 0 --rigid
     graph_vlabel bytes per second
-    graph_info Oracle Sysstat Physical Read/Write
+    graph_info Oracle Sysstat Physical Read/Write Bytes
 "
 data_attrs[$key]="\
     physical_read_total  DERIVE LINE2 'physical read total bytes'
     physical_read        DERIVE LINE  'physical read bytes'
     physical_write_total DERIVE LINE2 'physical write total bytes'
     physical_write       DERIVE LINE  'physical write bytes'
+"
+getvalue_func[$key]=getvalue_sysstat
+
+key=netrw
+global_attrs[$key]="\
+    graph_title Oracle Sysstat Network Send/Receive Bytes
+    graph_category db
+    graph_args --base 1024 --lower-limit 0 --rigid
+    graph_vlabel bytes per second
+    graph_info Oracle Sysstat Network Send/Receive Bytes
+"
+data_attrs[$key]="\
+    bytes_received_via_sql_net_from_client DERIVE LINE 'bytes received via SQL*Net from client'
+    bytes_sent_via_sql_net_to_client       DERIVE LINE 'bytes sent via SQL*Net to client'
+    bytes_received_via_sql_net_from_dblink DERIVE LINE 'bytes received via SQL*Net from dblink'
+    bytes_sent_via_sql_net_to_dblink       DERIVE LINE 'bytes sent via SQL*Net to dblink'
 "
 getvalue_func[$key]=getvalue_sysstat
 
