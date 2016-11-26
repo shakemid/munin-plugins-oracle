@@ -363,27 +363,9 @@ global_attrs[$key]="\
     graph_vlabel microseconds
     graph_info Oracle Wait Events Application
 "
-# memo: select event from v$system_event where wait_class = 'Application' order by event;
-data_attrs[$key]="\
-    enq_ko_fast_object_checkpoint         DERIVE LINE 'enq: KO - fast object checkpoint'
-    enq_pw_flush_prewarm_buffers          DERIVE LINE 'enq: PW - flush prewarm buffers'
-    enq_rc_result_cache_contention        DERIVE LINE 'enq: RC - Result Cache: Contention'
-    enq_ro_contention                     DERIVE LINE 'enq: RO - contention'
-    enq_ro_fast_object_reuse              DERIVE LINE 'enq: RO - fast object reuse'
-    enq_tm_contention                     DERIVE LINE 'enq: TM - contention'
-    enq_tx_row_lock_contention            DERIVE LINE 'enq: TX - row lock contention'
-    enq_ul_contention                     DERIVE LINE 'enq: UL - contention'
-    external_procedure_call               DERIVE LINE 'External Procedure call'
-    external_procedure_initial_connection DERIVE LINE 'External Procedure initial connection'
-    olap_dml_sleep                        DERIVE LINE 'OLAP DML Sleep'
-    repl_apply_apply_ddl                  DERIVE LINE 'REPL Apply: apply DDL'
-    repl_capture_filter_callback_ruleset  DERIVE LINE 'REPL Capture: filter callback ruleset'
-    sql_net_break_reset_to_client         DERIVE LINE 'SQL*Net break/reset to client'
-    sql_net_break_reset_to_dblink         DERIVE LINE 'SQL*Net break/reset to dblink'
-    wait_for_table_lock                   DERIVE LINE 'Wait for Table Lock'
-    wcr_replay_lock_order                 DERIVE LINE 'WCR: replay lock order'
-"
-getvalue_func[$key]=getvalue_eventwait2
+data_attrs[$key]=""
+getfield_func[$key]='getfield_eventwait2 Application'
+getvalue_func[$key]='getvalue_eventwait2 Application'
 
 key=eventwaitconcurrency
 global_attrs[$key]="\
@@ -393,28 +375,9 @@ global_attrs[$key]="\
     graph_vlabel microseconds
     graph_info Oracle Wait Events Concurrency
 "
-# memo: select event from v$system_event where wait_class = 'Concurrency' order by event;
-data_attrs[$key]="\
-    buffer_busy_waits                DERIVE LINE 'buffer busy waits'
-    cursor_mutex_s                   DERIVE LINE 'cursor: mutex S'
-    cursor_mutex_x                   DERIVE LINE 'cursor: mutex X'
-    cursor_pin_s                     DERIVE LINE 'cursor: pin S'
-    cursor_pin_s_wait_on_x           DERIVE LINE 'cursor: pin S wait on X'
-    cursor_pin_x                     DERIVE LINE 'cursor: pin X'
-    enq_tx_index_contention          DERIVE LINE 'enq: TX - index contention'
-    latch_cache_buffers_chains       DERIVE LINE 'latch: cache buffers chains'
-    latch_row_cache_objects          DERIVE LINE 'latch: row cache objects'
-    latch_shared_pool                DERIVE LINE 'latch: shared pool'
-    lck0_row_cache_object_free       DERIVE LINE 'LCK0 row cache object free'
-    libcache_interrupt_action_by_lck DERIVE LINE 'libcache interrupt action by LCK'
-    library_cache_load_lock          DERIVE LINE 'library cache load lock'
-    library_cache_lock               DERIVE LINE 'library cache lock'
-    library_cache_pin                DERIVE LINE 'library cache pin'
-    library_cache_mutex_x            DERIVE LINE 'library cache: mutex X'
-    resmgr_internal_state_change     DERIVE LINE 'resmgr:internal state change'
-    row_cache_lock                   DERIVE LINE 'row cache lock'
-"
-getvalue_func[$key]=getvalue_eventwait2
+data_attrs[$key]=" "
+getfield_func[$key]='getfield_eventwait2 Concurrency'
+getvalue_func[$key]='getvalue_eventwait2 Concurrency'
 
 key=eventwaituserio
 global_attrs[$key]="\
@@ -424,26 +387,9 @@ global_attrs[$key]="\
     graph_vlabel microseconds
     graph_info Oracle Wait Events User I/O
 "
-# memo: select event from v$system_event where wait_class = 'User I/O' order by event;
-data_attrs[$key]="\
-    parameter_file_io       DERIVE LINE 'Parameter File I/O'
-    disk_file_operations_io DERIVE LINE 'Disk file operations I/O'
-    data_file_init_write    DERIVE LINE 'Data file init write'
-    local_write_wait        DERIVE LINE 'local write wait'
-    read_by_other_session   DERIVE LINE 'read by other session'
-    db_file_sequential_read DERIVE LINE 'db file sequential read'
-    db_file_scattered_read  DERIVE LINE 'db file scattered read'
-    db_file_single_write    DERIVE LINE 'db file single write'
-    db_file_parallel_read   DERIVE LINE 'db file parallel read'
-    direct_path_read        DERIVE LINE 'direct path read'
-    direct_path_read_temp   DERIVE LINE 'direct path read temp'
-    direct_path_write       DERIVE LINE 'direct path write'
-    direct_path_write_temp  DERIVE LINE 'direct path write temp'
-    external_table_read     DERIVE LINE 'external table read'
-    external_table_write    DERIVE LINE 'external table write'
-    external_table_open     DERIVE LINE 'external table open'
-"
-getvalue_func[$key]=getvalue_eventwait2
+data_attrs[$key]=""
+getfield_func[$key]='getfield_eventwait2 "User I/O"'
+getvalue_func[$key]='getvalue_eventwait2 "User I/O"'
 
 key=eventwaitsystemio
 global_attrs[$key]="\
@@ -453,21 +399,10 @@ global_attrs[$key]="\
     graph_vlabel microseconds
     graph_info Oracle Wait Events System I/O
 "
-# memo: select event from v$system_event where wait_class = 'System I/O' or wait_class = 'Commit' order by event;
 data_attrs[$key]="\
-    control_file_parallel_write  DERIVE LINE 'control file parallel write'
-    control_file_sequential_read DERIVE LINE 'control file sequential read'
-    control_file_single_write    DERIVE LINE 'control file single write'
-    db_file_async_io_submit      DERIVE LINE 'db file async I/O submit'
-    db_file_parallel_write       DERIVE LINE 'db file parallel write'
-    kfk_async_disk_io            DERIVE LINE 'kfk: async disk IO'
-    log_archive_io               DERIVE LINE 'Log archive I/O'
-    log_file_parallel_write      DERIVE LINE 'log file parallel write'
-    log_file_sequential_read     DERIVE LINE 'log file sequential read'
-    log_file_single_write        DERIVE LINE 'log file single write'
-    log_file_sync                DERIVE LINE 'log file sync'
 "
-getvalue_func[$key]=getvalue_eventwait2
+getfield_func[$key]='getfield_eventwait2 "System I/O"'
+getvalue_func[$key]='getvalue_eventwait2 "System I/O"'
 
 key=eventwaitcluster
 global_attrs[$key]="\
@@ -477,33 +412,9 @@ global_attrs[$key]="\
     graph_vlabel microseconds
     graph_info Oracle Wait Events Cluster
 "
-# memo: select event from v$system_event where wait_class = 'Cluster' order by event;
-data_attrs[$key]="\
-    gc_buffer_busy_acquire         DERIVE LINE 'gc buffer busy acquire'
-    gc_buffer_busy_release         DERIVE LINE 'gc buffer busy release'
-    gc_cr_block_2_way              DERIVE LINE 'gc cr block 2-way'
-    gc_cr_block_busy               DERIVE LINE 'gc cr block busy'
-    gc_cr_block_congested          DERIVE LINE 'gc cr block congested'
-    gc_cr_block_lost               DERIVE LINE 'gc cr block lost'
-    gc_cr_disk_read                DERIVE LINE 'gc cr disk read'
-    gc_cr_failure                  DERIVE LINE 'gc cr failure'
-    gc_cr_grant_2_way              DERIVE LINE 'gc cr grant 2-way'
-    gc_cr_grant_congested          DERIVE LINE 'gc cr grant congested'
-    gc_cr_multi_block_request      DERIVE LINE 'gc cr multi block request'
-    gc_current_block_2_way         DERIVE LINE 'gc current block 2-way'
-    gc_current_block_busy          DERIVE LINE 'gc current block busy'
-    gc_current_block_congested     DERIVE LINE 'gc current block congested'
-    gc_current_block_lost          DERIVE LINE 'gc current block lost'
-    gc_current_grant_2_way         DERIVE LINE 'gc current grant 2-way'
-    gc_current_grant_busy          DERIVE LINE 'gc current grant busy'
-    gc_current_grant_congested     DERIVE LINE 'gc current grant congested'
-    gc_current_multi_block_request DERIVE LINE 'gc current multi block request'
-    gc_current_retry               DERIVE LINE 'gc current retry'
-    gc_current_split               DERIVE LINE 'gc current split'
-    gc_quiesce                     DERIVE LINE 'gc quiesce'
-    gc_remaster                    DERIVE LINE 'gc remaster'
-"
-getvalue_func[$key]=getvalue_eventwait2
+data_attrs[$key]=" "
+getfield_func[$key]='getfield_eventwait2 Cluster'
+getvalue_func[$key]='getvalue_eventwait2 Cluster'
 
 key=tablespace
 global_attrs[$key]="\
@@ -678,7 +589,7 @@ getvalue_cachehit() {
     ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
-  'buf_hitratio.value ' || round( ( 1 - a.value / ( b.value + c.value ) ) * 100 )
+  'buf_hitratio.value ' || ROUND( ( 1 - a.value / ( b.value + c.value ) ) * 100 )
 FROM
   v\$sysstat a, v\$sysstat b, v\$sysstat c
 WHERE
@@ -687,12 +598,12 @@ WHERE
   c.name = 'consistent gets'
 ;
 SELECT
-  'lib_hitratio.value ' || round( sum(pins) / ( sum(pins) + sum(reloads) ) * 100 )
+  'lib_hitratio.value ' || ROUND( SUM(pins) / ( SUM(pins) + SUM(reloads) ) * 100 )
 FROM
   v\$librarycache
 ;
 SELECT
-  'dict_hitratio.value ' || round( ( 1 - sum(getmisses) / sum(gets) ) * 100 )
+  'dict_hitratio.value ' || ROUND( ( 1 - SUM(getmisses) / SUM(gets) ) * 100 )
 FROM
   v\$rowcache
 ;
@@ -703,7 +614,7 @@ getfield_sessionuser() {
     data_attrs[$module]="$( ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
-  regexp_replace( username, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) ||
+  REGEXP_REPLACE( username, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) ||
   ' GAUGE LINE ' || '''' || username || ''''
 FROM
   dba_users
@@ -719,7 +630,7 @@ getvalue_sessionuser() {
     ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
-  regexp_replace( du.username, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) || '.value ' ||
+  REGEXP_REPLACE( du.username, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) || '.value ' ||
   count(vs.username)
 FROM 
   ( SELECT
@@ -741,7 +652,7 @@ getfield_sessionwait() {
     data_attrs[$module]="$( ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
-  regexp_replace( wait_class, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) ||
+  REGEXP_REPLACE( wait_class, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) ||
   ' GAUGE AREASTACK ' || '''' || wait_class || ''''
 FROM
   v\$event_name
@@ -761,7 +672,7 @@ getvalue_sessionwait() {
     ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
-  regexp_replace( en.wait_class, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) || '.value ' ||
+  REGEXP_REPLACE( en.wait_class, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) || '.value ' ||
   count(se.wait_class)
 FROM
   ( SELECT
@@ -801,7 +712,7 @@ getfield_eventwait() {
     data_attrs[$module]="$( ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
-  regexp_replace( wait_class, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) ||
+  REGEXP_REPLACE( wait_class, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) ||
   ' DERIVE LINE ' || '''' || wait_class || ''''
 FROM
   v\$event_name
@@ -820,7 +731,7 @@ getvalue_eventwait() {
     ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
-  regexp_replace( en.wait_class, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) || '.value ' ||
+  REGEXP_REPLACE( en.wait_class, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) || '.value ' ||
   NVL( SUM(se.time_waited_micro), 0 )
 FROM
   ( SELECT
@@ -848,38 +759,50 @@ WHERE
 EOF
 }
 
-getvalue_eventwait2() {
-    local line t field label
-    while read -r line
-    do
-        eval 't=(' "$line" ')'
-        field="${t[0]}"
-        [ -z "$field" ] && continue
-        label="${t[3]}"
+getfield_eventwait2() {
+    local waitclass="$1"
 
-        ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
+    data_attrs[$module]="$( ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
-VAR vf VARCHAR2(64)
 VAR vl VARCHAR2(64)
-EXEC :vf := '${field}' 
-EXEC :vl := '${label}' 
+EXEC :vl := '${waitclass}' 
 SELECT
-  :vf || '.value ' || NVL( se.time_waited_micro, 0 )
+  REGEXP_REPLACE( name, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) ||
+  ' DERIVE LINE ' || '''' || name || ''''
+FROM
+  v\$event_name 
+WHERE
+  wait_class = :vl
+ORDER BY
+  name;
+EOF
+)"
+}
+
+getvalue_eventwait2() {
+    local waitclass="$1"
+
+    ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
+${sqlplus_variables}
+VAR vl VARCHAR2(64)
+EXEC :vl := '${waitclass}' 
+SELECT
+  REGEXP_REPLACE( en.name, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) || '.value ' || 
+  NVL( se.time_waited_micro, 0 )
 FROM
   v\$event_name en LEFT JOIN v\$system_event se
 ON
   en.name = se.event
 WHERE
-  en.name = :vl;
+  en.wait_class = :vl;
 EOF
-    done <<< "${data_attrs[$module]}"
 }
 
 getfield_tablespace() {
     data_attrs[$module]="$( ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
-  regexp_replace( tablespace_name, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) ||
+  REGEXP_REPLACE( tablespace_name, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) ||
   ' GAUGE LINE ' || '''' || tablespace_name || ''''
 FROM
   dba_data_files
@@ -893,12 +816,12 @@ getvalue_tablespace() {
     ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
-  regexp_replace( tablespace_name, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) || '.value ' ||
-  round( (total_bytes - free_total_bytes) / total_bytes * 100, 0 )
+  REGEXP_REPLACE( tablespace_name, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) || '.value ' ||
+  ROUND( (total_bytes - free_total_bytes) / total_bytes * 100, 0 )
 FROM
   ( SELECT
       tablespace_name,
-      sum(bytes) total_bytes
+      SUM(bytes) total_bytes
     FROM
       dba_data_files
     GROUP BY
@@ -906,7 +829,7 @@ FROM
   ),
   ( SELECT
       tablespace_name free_tablespace_name,
-      sum(bytes) free_total_bytes
+      SUM(bytes) free_total_bytes
     FROM
       dba_free_space
     GROUP BY
@@ -921,7 +844,7 @@ getfield_asmusage() {
     data_attrs[$module]="$( ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
-  regexp_replace( name, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) ||
+  REGEXP_REPLACE( name, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) ||
   ' GAUGE LINE ' || '''' || name || ''''
 FROM
   v\$asm_diskgroup
@@ -935,8 +858,8 @@ getvalue_asmusage() {
     ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
-  regexp_replace( name, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) || '.value ' ||
-  round( ( total_mb - free_mb ) / total_mb * 100 )
+  REGEXP_REPLACE( name, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) || '.value ' ||
+  ROUND( ( total_mb - free_mb ) / total_mb * 100 )
 FROM
   v\$asm_diskgroup
 ORDER BY
