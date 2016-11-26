@@ -276,10 +276,10 @@ global_attrs[$key]="\
     graph_info Oracle Sysstat Network Send/Receive Bytes
 "
 data_attrs[$key]="\
-    bytes_received_via_sql_net_from_client DERIVE LINE 'bytes received via SQL*Net from client'
     bytes_sent_via_sql_net_to_client       DERIVE LINE 'bytes sent via SQL*Net to client'
-    bytes_received_via_sql_net_from_dblink DERIVE LINE 'bytes received via SQL*Net from dblink'
+    bytes_received_via_sql_net_from_client DERIVE LINE 'bytes received via SQL*Net from client'
     bytes_sent_via_sql_net_to_dblink       DERIVE LINE 'bytes sent via SQL*Net to dblink'
+    bytes_received_via_sql_net_from_dblink DERIVE LINE 'bytes received via SQL*Net from dblink'
 "
 getvalue_func[$key]=getvalue_sysstat
 
