@@ -7,13 +7,13 @@
 
   oracle_sysstat_* - Munin plugin to monitor Oracle Statistics
 
-    cursor               - To monitor Oracle Sysstat Open Cursor
     execute              - To monitor Oracle Sysstat Execute Count
     parse                - To monitor Oracle Sysstat Parse Count
     sort                 - To monitor Oracle Sysstat Sorts
     tablefetch           - To monitor Oracle Sysstat Table Fetch Rows
     tablescan            - To monitor Oracle Sysstat Table Scans
     transaction          - To monitor Oracle Sysstat Transactions
+    cursor               - To monitor Oracle Sysstat Open Cursor
     enqueue              - To monitor Oracle Sysstat Enqueues
     redolog              - To monitor Oracle Sysstat Redo Log
     physicaliops         - To monitor Oracle Sysstat Physical I/O Requests
@@ -590,13 +590,13 @@ config() {
 }
 
 getvalue() {
-    ${getvalue_func[$module]}
+    eval "${getvalue_func[$module]}"
     exit 0
 }
 
 getfield() {
     if [ -n "${getfield_func[$module]:-}" ]; then
-        ${getfield_func[$module]}
+        eval "${getfield_func[$module]}"
     fi
 }
 
