@@ -657,14 +657,20 @@ getfield_sessionuser() {
     local type_default=GAUGE
     local draw_default=LINE
 
-    local line
+    local line field label
     while read -r line
     do
-        data_attrs[$module]="${data_attrs[$module]}$line ${type_default} ${draw_default} '$line'"$'\n'
+        eval t=\( "$line" \)
+        field="${t[0]}"
+        [ -z "$field" ] && continue
+        label="${t[1]}"
+
+        data_attrs[$module]="${data_attrs[$module]}${field} ${type_default} ${draw_default} '${label}'"$'\n'
     done < <( exec ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
-  regexp_replace( username, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' )
+  regexp_replace( username, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) ||
+  ' ''' || username || ''''
 FROM
   dba_users
 WHERE
@@ -731,14 +737,20 @@ getfield_tablespace() {
     local type_default=GAUGE
     local draw_default=LINE
 
-    local line
+    local line field label
     while read -r line
     do
-        data_attrs[$module]="${data_attrs[$module]}$line ${type_default} ${draw_default} '$line'"$'\n'
+        eval t=\( "$line" \)
+        field="${t[0]}"
+        [ -z "$field" ] && continue
+        label="${t[1]}"
+
+        data_attrs[$module]="${data_attrs[$module]}${field} ${type_default} ${draw_default} '${label}'"$'\n'
     done < <( command ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
-  regexp_replace( tablespace_name, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' )
+  regexp_replace( tablespace_name, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) ||
+  ' ''' || tablespace_name || ''''
 FROM
   dba_data_files
 ORDER BY
@@ -779,10 +791,15 @@ getfield_asmusage() {
     local type_default=GAUGE
     local draw_default=LINE
 
-    local line
+    local line field label
     while read -r line
     do
-        data_attrs[$module]="${data_attrs[$module]}$line ${type_default} ${draw_default} '$line'"$'\n'
+        eval t=\( "$line" \)
+        field="${t[0]}"
+        [ -z "$field" ] && continue
+        label="${t[1]}"
+
+        data_attrs[$module]="${data_attrs[$module]}${field} ${type_default} ${draw_default} '${label}'"$'\n'
     done < <( command ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
@@ -812,14 +829,20 @@ getfield_sessionwait() {
     local type_default=GAUGE
     local draw_default=AREASTACK
 
-    local line
+    local line field label
     while read -r line
     do
-        data_attrs[$module]="${data_attrs[$module]}$line ${type_default} ${draw_default} '$line'"$'\n'
+        eval t=\( "$line" \)
+        field="${t[0]}"
+        [ -z "$field" ] && continue
+        label="${t[1]}"
+
+        data_attrs[$module]="${data_attrs[$module]}${field} ${type_default} ${draw_default} '${label}'"$'\n'
     done < <( command ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
-  regexp_replace( wait_class, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' )
+  regexp_replace( wait_class, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) ||
+  ' ''' || wait_class || ''''
 FROM
   v\$event_name
 WHERE
@@ -828,8 +851,8 @@ GROUP BY
   wait_class
 ORDER BY
   wait_class;
-SELECT 'Other' from dual;
-SELECT 'Idle' from dual;
+SELECT 'Other', 'Other' from dual;
+SELECT 'Idle', 'Idle' from dual;
 EOF
 )
 }
@@ -878,14 +901,20 @@ getfield_eventwait() {
     local type_default=DERIVE
     local draw_default=LINE
 
-    local line
+    local line field label
     while read -r line
     do
-        data_attrs[$module]="${data_attrs[$module]}$line ${type_default} ${draw_default} '$line'"$'\n'
+        eval t=\( "$line" \)
+        field="${t[0]}"
+        [ -z "$field" ] && continue
+        label="${t[1]}"
+
+        data_attrs[$module]="${data_attrs[$module]}${field} ${type_default} ${draw_default} '${label}'"$'\n'
     done < <( command ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
-  regexp_replace( wait_class, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' )
+  regexp_replace( wait_class, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) ||
+  ' ''' || wait_class || ''''
 FROM
   v\$event_name
 WHERE
@@ -894,7 +923,7 @@ GROUP BY
   wait_class
 ORDER BY
   wait_class;
-SELECT 'Other' from dual;
+SELECT 'Other', 'Other' from dual;
 EOF
 )
 }
