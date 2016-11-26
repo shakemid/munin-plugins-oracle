@@ -722,7 +722,7 @@ GROUP BY
   wait_class
 ORDER BY
   wait_class;
-SELECT 'Other', 'Other' from dual;
+SELECT 'Other DERIVE LINE Other' from dual;
 EOF
 )"
 }
