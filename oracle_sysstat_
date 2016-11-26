@@ -555,7 +555,7 @@ config() {
     local line t fields field type draw label
     while read -r line
     do
-        eval t=\( "${line}" \)
+        eval t=\( "$line" \)
         field="${t[0]}"
         [ -z "$field" ] && continue
         fields+=( $field )
@@ -588,7 +588,7 @@ getvalue_sysstat() {
     local line t field label
     while read -r line
     do
-        eval t=\( "${line}" \)
+        eval t=\( "$line" \)
         field="${t[0]}"
         [ -z "$field" ] && continue
         label="${t[3]}"
@@ -611,7 +611,7 @@ getvalue_sgainfo() {
     local line t field label
     while read -r line
     do
-        eval t=\( "${line}" \)
+        eval t=\( "$line" \)
         field="${t[0]}"
         [ -z "$field" ] && continue
         label="${t[3]}"
@@ -634,7 +634,7 @@ getvalue_pgastat() {
     local line t field label
     while read -r line
     do
-        eval t=\( "${line}" \)
+        eval t=\( "$line" \)
         field="${t[0]}"
         [ -z "$field" ] && continue
         label="${t[3]}"
@@ -660,8 +660,7 @@ getfield_loginuser() {
     local line
     while read -r line
     do
-        data_attrs[$module]="${data_attrs[$module]}
-        $line ${type_default} ${draw_default} '$line'"
+        data_attrs[$module]="${data_attrs[$module]}"$'\n'"$line ${type_default} ${draw_default} '$line'"
     done < <( exec ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
@@ -735,9 +734,8 @@ getfield_tablespace() {
     local line
     while read -r line
     do
-        data_attrs[$module]="${data_attrs[$module]}
-        $line ${type_default} ${draw_default} '$line'"
-    done < <( exec ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
+        data_attrs[$module]="${data_attrs[$module]}"$'\n'"$line ${type_default} ${draw_default} '$line'"
+    done < <( command ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
    regexp_replace( tablespace_name, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' )
@@ -784,9 +782,8 @@ getfield_asmusage() {
     local line
     while read -r line
     do
-        data_attrs[$module]="${data_attrs[$module]}
-        $line ${type_default} ${draw_default} '$line'"
-    done < <( exec ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
+        data_attrs[$module]="${data_attrs[$module]}"$'\n'"$line ${type_default} ${draw_default} '$line'"
+    done < <( command ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
    regexp_replace( name, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' )
@@ -818,9 +815,8 @@ getfield_sessionwait() {
     local line
     while read -r line
     do
-        data_attrs[$module]="${data_attrs[$module]}
-        $( clean_fieldname $line ) ${type_default} ${draw_default} '$line'"
-    done < <( exec ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
+        data_attrs[$module]="${data_attrs[$module]}"$'\n'"$( clean_fieldname $line ) ${type_default} ${draw_default} '$line'"
+    done < <( command ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
   wait_class
@@ -842,7 +838,7 @@ getvalue_sessionwait() {
     local line t field label
     while read -r line
     do
-        eval t=\( "${line}" \)
+        eval t=\( "$line" \)
         field="${t[0]}"
         [ -z "$field" ] && continue
         label="${t[3]}"
@@ -868,9 +864,8 @@ getfield_eventwait() {
     local line
     while read -r line
     do
-        data_attrs[$module]="${data_attrs[$module]}
-        $( clean_fieldname $line ) ${type_default} ${draw_default} '$line'"
-    done < <( exec ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
+        data_attrs[$module]="${data_attrs[$module]}"$'\n'"$( clean_fieldname $line ) ${type_default} ${draw_default} '$line'"
+    done < <( command ${sqlplus} ${sqlplus_opts} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
   wait_class
@@ -891,7 +886,7 @@ getvalue_eventwait() {
     local line t field label
     while read -r line
     do
-        eval t=\( "${line}" \)
+        eval t=\( "$line" \)
         field="${t[0]}"
         [ -z "$field" ] && continue
         label="${t[3]}"
@@ -914,7 +909,7 @@ getvalue_eventwait2() {
     local line t field label
     while read -r line
     do
-        eval t=\( "${line}" \)
+        eval t=\( "$line" \)
         field="${t[0]}"
         [ -z "$field" ] && continue
         label="${t[3]}"
