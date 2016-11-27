@@ -512,14 +512,18 @@ config() {
     echo graph_order ${fields[@]}
 }
 
+# wrapper for getfield_*
 getfield() {
     if [ -n "${getfield_func[$module]:-}" ]; then
-        eval "${getfield_func[$module]}"
+        # execute getfield_* function with args
+        ${getfield_func[$module]}
     fi
 }
 
+# wrapper for getvalue_*
 getvalue() {
-    eval "${getvalue_func[$module]}"
+    # execute getvalue_* function with args
+    ${getvalue_func[$module]}
 }
 
 getvalue_sysstat() {
