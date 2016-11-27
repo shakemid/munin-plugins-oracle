@@ -892,7 +892,6 @@ config)
     config
     ;;
 *)
-    getfield
     getvalue
     ;;
 esac
