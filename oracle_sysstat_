@@ -495,7 +495,9 @@ config() {
     local line t fields field type draw label
     while IFS= read -r line
     do
-        eval 't=(' "$line" ')'
+        # split line into field,type,draw,label 
+        # eval looks necessary to preserve whitespaces 
+        eval 't=( '"$line"' )'
         field="${t[0]}"
         [ -z "$field" ] && continue
         fields+=( $field )
@@ -515,6 +517,7 @@ config() {
 getfield() {
     if [ -n "${getfield_func[$module]:-}" ]; then
         # call getfield_* function with args if necessary
+        # eval looks necessary to use args contain whitespaces
         eval "${getfield_func[$module]}"
     fi
 }
@@ -522,6 +525,7 @@ getfield() {
 # wrapper for getvalue_*
 getvalue() {
     # call getvalue_* function with args if necessary
+    # eval looks necessary to use args contain whitespaces
     eval "${getvalue_func[$module]}"
 }
 
@@ -529,7 +533,9 @@ getvalue_sysstat() {
     local line t field label
     while IFS= read -r line
     do
-        eval 't=(' "$line" ')'
+        # split line into field,type,draw,label 
+        # eval looks necessary to preserve whitespaces 
+        eval 't=( '"$line"' )'
         field="${t[0]}"
         [ -z "$field" ] && continue
         label="${t[3]}"
@@ -554,7 +560,9 @@ getvalue_sgainfo() {
     local line t field label
     while IFS= read -r line
     do
-        eval 't=(' "$line" ')'
+        # split line into field,type,draw,label 
+        # eval looks necessary to preserve whitespaces 
+        eval 't=( '"$line"' )'
         field="${t[0]}"
         [ -z "$field" ] && continue
         label="${t[3]}"
@@ -579,7 +587,9 @@ getvalue_pgastat() {
     local line t field label
     while IFS= read -r line
     do
-        eval 't=(' "$line" ')'
+        # split line into field,type,draw,label 
+        # eval looks necessary to preserve whitespaces 
+        eval 't=( '"$line"' )'
         field="${t[0]}"
         [ -z "$field" ] && continue
         label="${t[3]}"
