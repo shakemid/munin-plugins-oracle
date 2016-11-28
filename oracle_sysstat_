@@ -78,7 +78,7 @@
 #%# capabilities=autoconf suggest
 
 # Include plugin.sh
-. $MUNIN_LIBDIR/plugins/plugin.sh
+. "${MUNIN_LIBDIR}/plugins/plugin.sh"
 
 # Like perl 'use strict;' 
 #set -o nounset
