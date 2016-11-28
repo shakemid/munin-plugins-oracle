@@ -484,7 +484,7 @@ autoconf() {
 }
 
 suggest() {
-    echo ${!global_attrs[@]} | tr ' ' '\n' | sort
+    echo "${!global_attrs[@]}" | tr ' ' '\n' | sort
 }
 
 config() {
@@ -503,12 +503,12 @@ config() {
         draw="${t[2]}"
         label="${t[3]}"
 
-        echo ${field}.type  ${type}
-        echo ${field}.draw  ${draw}
-        echo ${field}.label ${label}
+        echo "${field}.type" "$type"
+        echo "${field}.draw"  "$draw"
+        echo "${field}.label" "$label"
     done <<< "${data_attrs[$module]}"
 
-    echo graph_order ${fields[@]}
+    echo graph_order "${fields[@]}"
 }
 
 # wrapper for getfield_*
