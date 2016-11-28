@@ -517,7 +517,7 @@ config() {
 getfield() {
     if [ -n "${getfield_func[$module]:-}" ]; then
         # call getfield_* function with args if necessary
-        # eval looks necessary to use args contain whitespaces
+        # eval looks necessary if args contain whitespaces
         eval "${getfield_func[$module]}"
     fi
 }
@@ -525,7 +525,7 @@ getfield() {
 # wrapper for getvalue_*
 getvalue() {
     # call getvalue_* function with args if necessary
-    # eval looks necessary to use args contain whitespaces
+    # eval looks necessary if args contain whitespaces
     eval "${getvalue_func[$module]}"
 }
 
