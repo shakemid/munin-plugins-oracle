@@ -84,15 +84,15 @@
 #set -o nounset
 
 # Environments
-: ${ORACLE_HOME:=$( echo /opt/oracle/product/* )}
-: ${ORACLE_SID:=orcl}
-: ${oracle_auth:=/ as SYSDBA}
+: "${ORACLE_HOME:=$( echo /opt/oracle/product/* )}"
+: "${ORACLE_SID:=orcl}"
+: "${oracle_auth:=/ as SYSDBA}"
 
 PATH=$PATH:$ORACLE_HOME/bin
 export PATH ORACLE_HOME ORACLE_SID
 
 # Module name
-module=$( basename $0 | sed -e 's/^.*_//' )
+module=$( basename "$0" | sed -e 's/^.*_//' )
 
 # Graph settings
 declare -A global_attrs  # required
@@ -464,7 +464,7 @@ getvalue_func[$key]=getvalue_asmusage
 # End of Graph Settings
 
 # sqlplus options
-: ${sqlplus:=sqlplus -S -L}
+: "${sqlplus:=sqlplus -S -L}"
 sqlplus_variables="
     set pagesize 0
     set feed off
@@ -476,7 +476,7 @@ sqlplus_variables="
 # functions 
 
 autoconf() {
-    if [ -x "$( which ${sqlplus} )" ]; then
+    if [ -x "$( which "${sqlplus}" )" ]; then
         echo yes
     else
         echo "no (failed to find executable 'sqlplus')"
