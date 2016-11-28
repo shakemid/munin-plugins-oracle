@@ -515,14 +515,14 @@ config() {
 # wrapper for getfield_*
 getfield() {
     if [ -n "${getfield_func[$module]:-}" ]; then
-        # execute getfield_* function with args
+        # call getfield_* function with args if necessary
         ${getfield_func[$module]}
     fi
 }
 
 # wrapper for getvalue_*
 getvalue() {
-    # execute getvalue_* function with args
+    # call getvalue_* function with args if necessary
     ${getvalue_func[$module]}
 }
 
