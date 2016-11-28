@@ -497,7 +497,7 @@ config() {
     do
         # split line into field,type,draw,label 
         # eval looks necessary to preserve whitespaces 
-        eval 't=( '"$line"' )'
+        eval "t=( ${line} )"
         field="${t[0]}"
         [ -z "$field" ] && continue
         fields+=( $field )
@@ -535,7 +535,7 @@ getvalue_sysstat() {
     do
         # split line into field,type,draw,label 
         # eval looks necessary to preserve whitespaces 
-        eval 't=( '"$line"' )'
+        eval "t=( ${line} )"
         field="${t[0]}"
         [ -z "$field" ] && continue
         label="${t[3]}"
@@ -562,7 +562,7 @@ getvalue_sgainfo() {
     do
         # split line into field,type,draw,label 
         # eval looks necessary to preserve whitespaces 
-        eval 't=( '"$line"' )'
+        eval "t=( ${line} )"
         field="${t[0]}"
         [ -z "$field" ] && continue
         label="${t[3]}"
@@ -589,7 +589,7 @@ getvalue_pgastat() {
     do
         # split line into field,type,draw,label 
         # eval looks necessary to preserve whitespaces 
-        eval 't=( '"$line"' )'
+        eval "t=( ${line} )"
         field="${t[0]}"
         [ -z "$field" ] && continue
         label="${t[3]}"
