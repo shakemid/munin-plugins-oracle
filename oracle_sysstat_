@@ -505,7 +505,7 @@ config() {
         draw="${t[2]}"
         label="${t[3]}"
 
-        echo "${field}.type" "$type"
+        echo "${field}.type"  "$type"
         echo "${field}.draw"  "$draw"
         echo "${field}.label" "$label"
     done <<< "${data_attrs[$module]}"
