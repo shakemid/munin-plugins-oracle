@@ -524,8 +524,8 @@ config() {
     local fields field type draw label
     while read -r field type draw label
     do
-        [ -z "$field" ] && continue
-        fields="${fields} ${field}"
+        [ -z "${field:-}" ] && continue
+        fields="${fields:-} ${field}"
 
         echo "${field}.type"  "$type"
         echo "${field}.draw"  "$draw"
