@@ -27,6 +27,7 @@
     sessionwait          - To monitor Oracle Session Wait
     eventwait            - To monitor Oracle Wait Events
     eventwaitapplication - To monitor Oracle Wait Events Application
+    eventwaitnetwork     - To monitor Oracle Wait Events Network
     eventwaitconcurrency - To monitor Oracle Wait Events Concurrency
     eventwaituserio      - To monitor Oracle Wait Events User I/O
     eventwaitsystemio    - To monitor Oracle Wait Events System I/O
@@ -398,6 +399,18 @@ global_attrs[$key]="
 data_attrs[$key]=""
 getfield_func[$key]="getfield_eventwait2 Application"
 getvalue_func[$key]="getvalue_eventwait2 Application"
+
+key=eventwaitnetwork
+global_attrs[$key]="
+    graph_title Oracle Wait Events Network
+    graph_category db
+    graph_args --base 1000 --lower-limit 0 --rigid
+    graph_vlabel microseconds
+    graph_info Oracle Wait Events Network
+"
+data_attrs[$key]=""
+getfield_func[$key]="getfield_eventwait2 Network"
+getvalue_func[$key]="getvalue_eventwait2 Network"
 
 key=eventwaitconcurrency
 global_attrs[$key]="
