@@ -13,6 +13,7 @@
     tablescan            - To monitor Oracle Sysstat Table Scans
     transaction          - To monitor Oracle Sysstat Transactions
     sort                 - To monitor Oracle Sysstat Sorts
+    logon                - To monitor Oracle Sysstat User Logons
     cursor               - To monitor Oracle Sysstat Open Cursor
     enqueue              - To monitor Oracle Sysstat Enqueues
     redolog              - To monitor Oracle Sysstat Redo Log
@@ -187,7 +188,21 @@ data_attrs[$key]="
 "
 getvalue_func[$key]=getvalue_sysstat
 
+key=logon
+global_attrs[$key]="
+    graph_title Oracle Sysstat User Logons
+    graph_category db
+    graph_args --base 1000 --lower-limit 0 --rigid
+    graph_vlabel count per second
+    graph_info Oracle Sysstat User Logons
+"
+data_attrs[$key]="
+    logon DERIVE LINE logons cumulative
+"
+getvalue_func[$key]=getvalue_sysstat
+
 key=cursor
+
 global_attrs[$key]="
     graph_title Oracle Sysstat Open Cursors
     graph_category db
