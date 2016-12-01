@@ -585,7 +585,7 @@ getvalue_sysstat() {
     do
         [ -z "$field" ] && continue
 
-        ${sqlplus} "${oracle_auth}" <<EOF
+        cat <<EOF
 ${sqlplus_variables}
 VAR vf VARCHAR2(64)
 VAR vl VARCHAR2(64)
@@ -598,7 +598,7 @@ FROM
 WHERE
   name = :vl;
 EOF
-    done <<< "${data_attrs[$module]}"
+    done <<< "${data_attrs[$module]}" | ${sqlplus} "${oracle_auth}"
 }
 
 getvalue_sgainfo() {
@@ -607,7 +607,7 @@ getvalue_sgainfo() {
     do
         [ -z "$field" ] && continue
 
-        ${sqlplus} "${oracle_auth}" <<EOF
+        cat <<EOF
 ${sqlplus_variables}
 VAR vf VARCHAR2(64)
 VAR vl VARCHAR2(64)
@@ -620,7 +620,7 @@ FROM
 WHERE
   name = :vl;
 EOF
-    done <<< "${data_attrs[$module]}"
+    done <<< "${data_attrs[$module]}" | ${sqlplus} "${oracle_auth}"
 }
 
 getvalue_pgastat() {
@@ -629,7 +629,7 @@ getvalue_pgastat() {
     do
         [ -z "$field" ] && continue
 
-        ${sqlplus} "${oracle_auth}" <<EOF
+        cat <<EOF
 ${sqlplus_variables}
 VAR vf VARCHAR2(64)
 VAR vl VARCHAR2(64)
@@ -642,7 +642,7 @@ FROM
 WHERE
   name = :vl;
 EOF
-    done <<< "${data_attrs[$module]}"
+    done <<< "${data_attrs[$module]}" | ${sqlplus} "${oracle_auth}"
 }
 
 getvalue_cachehit() {
