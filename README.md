@@ -1,6 +1,9 @@
 Munin Plugins for Oracle
 ====
 
+#Moved to
+-> https://github.com/shakemid/munin-plugins-contrib/blob/branch_shakemid/plugins/oracle/oracle_sysstat_
+
 #Sample Images
 ![](https://github.com/shakemid/munin-plugins-oracle/blob/images/examples/oracle_cursor-week.png)
 ![](https://github.com/shakemid/munin-plugins-oracle/blob/images/examples/oracle_event_wait-week.png)
