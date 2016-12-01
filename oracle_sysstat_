@@ -530,7 +530,7 @@ sqlplus_variables="
 # functions 
 
 autoconf() {
-    if [ -x "$( which "${sqlplus}" )" ]; then
+    if [ -x $( which "${sqlplus}" ) ]; then
         echo yes
     else
         echo "no (failed to find executable 'sqlplus')"
@@ -757,7 +757,7 @@ EOF
 }
 
 getfield_sessionuser() {
-    data_attrs[$module]="$( ${sqlplus} "${oracle_auth}" <<EOF
+    data_attrs[$module]=$( ${sqlplus} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
   REGEXP_REPLACE( username, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) ||
@@ -769,7 +769,7 @@ WHERE
 ORDER BY
   username;
 EOF
-)"
+)
 }
 
 getvalue_sessionuser() {
@@ -795,7 +795,7 @@ EOF
 }
 
 getfield_sessionwait() {
-    data_attrs[$module]="$( ${sqlplus} "${oracle_auth}" <<EOF
+    data_attrs[$module]=$( ${sqlplus} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
   REGEXP_REPLACE( wait_class, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) ||
@@ -811,7 +811,7 @@ ORDER BY
 SELECT 'Other GAUGE AREASTACK Other' from dual;
 SELECT 'Idle  GAUGE AREASTACK Idle' from dual;
 EOF
-)"
+)
 }
 
 getvalue_sessionwait() {
@@ -838,7 +838,7 @@ EOF
 }
 
 getfield_eventwait() {
-    data_attrs[$module]="$( ${sqlplus} "${oracle_auth}" <<EOF
+    data_attrs[$module]=$( ${sqlplus} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
   REGEXP_REPLACE( wait_class, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) ||
@@ -853,7 +853,7 @@ ORDER BY
   wait_class;
 SELECT 'Other DERIVE LINE Other' from dual;
 EOF
-)"
+)
 }
 
 getvalue_eventwait() {
@@ -883,7 +883,7 @@ EOF
 getfield_eventwait2() {
     local waitclass="$1"
 
-    data_attrs[$module]="$( ${sqlplus} "${oracle_auth}" <<EOF
+    data_attrs[$module]=$( ${sqlplus} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 VAR vl VARCHAR2(64)
 EXEC :vl := '${waitclass}' 
@@ -897,7 +897,7 @@ WHERE
 ORDER BY
   name;
 EOF
-)"
+)
 }
 
 getvalue_eventwait2() {
@@ -920,7 +920,7 @@ EOF
 }
 
 getfield_tablespace() {
-    data_attrs[$module]="$( ${sqlplus} "${oracle_auth}" <<EOF
+    data_attrs[$module]=$( ${sqlplus} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
   REGEXP_REPLACE( tablespace_name, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) ||
@@ -930,7 +930,7 @@ FROM
 ORDER BY
   tablespace_name;
 EOF
-)"
+)
 }
 
 getvalue_tablespace() {
@@ -962,7 +962,7 @@ EOF
 }
 
 getfield_asmusage() {
-    data_attrs[$module]="$( ${sqlplus} "${oracle_auth}" <<EOF
+    data_attrs[$module]=$( ${sqlplus} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
 SELECT
   REGEXP_REPLACE( name, '^[^A-Za-z_]|[^A-Za-z0-9_]', '_' ) ||
@@ -972,7 +972,7 @@ FROM
 ORDER BY
   name;
 EOF
-)"
+)
 }
 
 getvalue_asmusage() {
