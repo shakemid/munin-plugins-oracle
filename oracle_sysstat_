@@ -7,33 +7,35 @@
 
   oracle_sysstat_* - Munin plugin to monitor Oracle Statistics
 
-    execute              - To monitor Oracle Sysstat Execute Count
-    parse                - To monitor Oracle Sysstat Parse Count
-    tablefetch           - To monitor Oracle Sysstat Table Fetch Rows
-    tablescan            - To monitor Oracle Sysstat Table Scans
-    transaction          - To monitor Oracle Sysstat Transactions
-    sort                 - To monitor Oracle Sysstat Sorts
-    logon                - To monitor Oracle Sysstat User Logons
-    cursor               - To monitor Oracle Sysstat Open Cursor
-    enqueue              - To monitor Oracle Sysstat Enqueues
-    redolog              - To monitor Oracle Sysstat Redo Log
-    physicaliops         - To monitor Oracle Sysstat Physical I/O Requests
-    physicalrw           - To monitor Oracle Sysstat Physical Read/Write Bytes
-    netrw                - To monitor Oracle Sysstat Network Send/Receive Bytes
-    sgainfo              - To monitor Oracle Memory SGA
-    pgastat              - To monitor Oracle Memory PGA
-    cachehit             - To monitor Oracle Cache Hit Ratio
-    sessionuser          - To monitor Oracle Session Users
-    sessionwait          - To monitor Oracle Session Wait
-    eventwait            - To monitor Oracle Wait Events
-    eventwaitapplication - To monitor Oracle Wait Events Application
-    eventwaitnetwork     - To monitor Oracle Wait Events Network
-    eventwaitconcurrency - To monitor Oracle Wait Events Concurrency
-    eventwaituserio      - To monitor Oracle Wait Events User I/O
-    eventwaitsystemio    - To monitor Oracle Wait Events System I/O
-    eventwaitcluster     - To monitor Oracle Wait Events Cluster
-    tablespace           - To monitor Oracle Table Space Usage
-    asmusage             - To monitor Oracle ASM Disk Group Usage
+    execute                 - To monitor Oracle Sysstat Execute Count
+    parse                   - To monitor Oracle Sysstat Parse Count
+    tablefetch              - To monitor Oracle Sysstat Table Fetch Rows
+    tablescan               - To monitor Oracle Sysstat Table Scans
+    transaction             - To monitor Oracle Sysstat Transactions
+    sort                    - To monitor Oracle Sysstat Sorts
+    logon                   - To monitor Oracle Sysstat User Logons
+    cursor                  - To monitor Oracle Sysstat Open Cursor
+    enqueue                 - To monitor Oracle Sysstat Enqueues
+    redolog                 - To monitor Oracle Sysstat Redo Log
+    physicaliops            - To monitor Oracle Sysstat Physical I/O Requests
+    physicalrw              - To monitor Oracle Sysstat Physical Read/Write Bytes
+    netrw                   - To monitor Oracle Sysstat Network Send/Receive Bytes
+    sgainfo                 - To monitor Oracle Memory SGA
+    pgastat                 - To monitor Oracle Memory PGA
+    cachehit                - To monitor Oracle Cache Hit Ratio
+    sessionuser             - To monitor Oracle Session Users
+    sessionwait             - To monitor Oracle Session Wait
+    eventwait               - To monitor Oracle Wait Events
+    eventwaitapplication    - To monitor Oracle Wait Events Application
+    eventwaitnetwork        - To monitor Oracle Wait Events Network
+    eventwaitconcurrency    - To monitor Oracle Wait Events Concurrency
+    eventwaituserio         - To monitor Oracle Wait Events User I/O
+    eventwaitsystemio       - To monitor Oracle Wait Events System I/O
+    eventwaitcluster        - To monitor Oracle Wait Events Cluster
+    eventwaitadministrative - To monitor Oracle Wait Events Administrative
+    eventwaitconfiguration  - To monitor Oracle Wait Events Configuration
+    tablespace              - To monitor Oracle Table Space Usage
+    asmusage                - To monitor Oracle ASM Disk Group Usage
 
 =head1 CONFIGURATION
 
@@ -460,6 +462,30 @@ global_attrs[$key]="
 data_attrs[$key]=" "
 getfield_func[$key]="getfield_eventwait2 Cluster"
 getvalue_func[$key]="getvalue_eventwait2 Cluster"
+
+key=eventwaitadministrative
+global_attrs[$key]="
+    graph_title Oracle Wait Events Administrative
+    graph_category db
+    graph_args --base 1000 --lower-limit 0 --rigid
+    graph_vlabel microseconds
+    graph_info Oracle Wait Events Administrative
+"
+data_attrs[$key]=" "
+getfield_func[$key]="getfield_eventwait2 Administrative"
+getvalue_func[$key]="getvalue_eventwait2 Administrative"
+
+key=eventwaitconfiguration
+global_attrs[$key]="
+    graph_title Oracle Wait Events Configuration
+    graph_category db
+    graph_args --base 1000 --lower-limit 0 --rigid
+    graph_vlabel microseconds
+    graph_info Oracle Wait Events Configuration
+"
+data_attrs[$key]=" "
+getfield_func[$key]="getfield_eventwait2 Configuration"
+getvalue_func[$key]="getvalue_eventwait2 Configuration"
 
 key=tablespace
 global_attrs[$key]="
