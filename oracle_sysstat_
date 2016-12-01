@@ -342,7 +342,7 @@ global_attrs[$key]="
     graph_category db
     graph_args --base 1000 --lower-limit 0 --upper-limit 100 --rigid
     graph_vlabel %
-    graph_info Oracle Cache Hit Ratio
+    graph_info Oracle Cache Hit Ratio - The graph shows cache hit ratio between munin-update intervals (5 minutes in most cases).
     graph_scale no
 "
 data_attrs[$key]="
@@ -620,27 +620,113 @@ EOF
 }
 
 getvalue_cachehit() {
-    ${sqlplus} "${oracle_auth}" <<EOF
+    local buf_physical_reads buf_db_block_gets buf_consistent_gets
+    local lib_pins lib_reloads
+    local dict_gets dict_getmisses
+
+    local prev_buf_physical_reads prev_buf_db_block_gets prev_buf_consistent_gets
+    local prev_lib_pins prev_lib_reloads
+    local prev_dict_gets prev_dict_getmisses
+
+    local buf_hitratio lib_hitratio dict_hitratio
+
+    local statefile="${MUNIN_PLUGSTATE:-}/oracle_sysstat_cachehit.state"
+    local is_initial=0
+
+    # get previous values from state file
+    if [ -r "$statefile" ];then
+        . "$statefile"
+    else
+        # looks initial run
+        is_initial=1
+    fi
+
+    # get current values
+    buf_physical_reads=$( ${sqlplus} "${oracle_auth}" <<EOF
 ${sqlplus_variables}
-SELECT
-  'buf_hitratio.value ' || ROUND( ( 1 - a.value / ( b.value + c.value ) ) * 100 )
-FROM
-  v\$sysstat a, v\$sysstat b, v\$sysstat c
-WHERE
-  a.name = 'physical reads' AND
-  b.name = 'db block gets' AND
-  c.name = 'consistent gets'
-;
-SELECT
-  'lib_hitratio.value ' || ROUND( SUM(pins) / ( SUM(pins) + SUM(reloads) ) * 100 )
-FROM
-  v\$librarycache
-;
-SELECT
-  'dict_hitratio.value ' || ROUND( ( 1 - SUM(getmisses) / SUM(gets) ) * 100 )
-FROM
-  v\$rowcache
-;
+SELECT SUM(value) FROM v\$sysstat WHERE name = 'physical reads cache';
+EOF
+)
+    buf_db_block_gets=$( ${sqlplus} "${oracle_auth}" <<EOF
+${sqlplus_variables}
+SELECT SUM(value) FROM v\$sysstat WHERE name = 'db block gets from cache';
+EOF
+)
+    buf_consistent_gets=$( ${sqlplus} "${oracle_auth}" <<EOF
+${sqlplus_variables}
+SELECT SUM(value) FROM v\$sysstat WHERE name = 'consistent gets from cache';
+EOF
+)
+    lib_pins=$( ${sqlplus} "${oracle_auth}" <<EOF
+${sqlplus_variables}
+SELECT SUM(pins) FROM v\$librarycache;
+EOF
+)
+    lib_reloads=$( ${sqlplus} "${oracle_auth}" <<EOF
+${sqlplus_variables}
+SELECT SUM(reloads) FROM v\$librarycache;
+EOF
+)
+    dict_gets=$( ${sqlplus} "${oracle_auth}" <<EOF
+${sqlplus_variables}
+SELECT SUM(gets) FROM v\$rowcache;
+EOF
+)
+    dict_getmisses=$( ${sqlplus} "${oracle_auth}" <<EOF
+${sqlplus_variables}
+SELECT SUM(getmisses) FROM v\$rowcache;
+EOF
+)
+
+    # calc values
+    if [ "$is_initial" = 0 ]; then
+        buf_hitratio=$( bc <<< "scale=2; \
+            p=${buf_physical_reads} - ${prev_buf_physical_reads}; \
+            d=${buf_db_block_gets} - ${prev_buf_db_block_gets}; \
+            c=${buf_consistent_gets} - ${prev_buf_consistent_gets}; \
+            ( 1 - p / ( d + c ) ) * 100" \
+            | sed -e 's/\..*$//' )
+        lib_hitratio=$( bc <<< "scale=2; \
+            p=${lib_pins} - ${prev_lib_pins}; \
+            r=${lib_reloads} - ${prev_lib_reloads}; \
+            p / ( p + r ) * 100" \
+            | sed -e 's/\..*$//' )
+        dict_hitratio=$( bc <<< "scale=2; \
+            g=${dict_gets} - ${prev_dict_gets}; \
+            m=${dict_getmisses} - ${prev_dict_getmisses}; \
+            ( g - m ) / g * 100" \
+            | sed -e 's/\..*$//' )
+
+        # validation 
+        if [[ $buf_hitratio =~ [^0-9] || $buf_hitratio -gt 100 ]]; then
+            buf_hitratio=U
+        fi
+        if [[ $lib_hitratio =~ [^0-9] || $lib_hitratio -gt 100 ]]; then
+            lib_hitratio=U
+        fi
+        if [[ $dict_hitratio =~ [^0-9] || $dict_hitratio -gt 100 ]]; then
+            dict_hitratio=U
+        fi
+    else
+        buf_hitratio=U
+        lib_hitratio=U
+        dict_hitratio=U
+    fi
+
+    # print values
+    echo "buf_hitratio.value ${lib_hitratio}"
+    echo "lib_hitratio.value ${lib_hitratio}"
+    echo "dict_hitratio.value ${dict_hitratio}"
+
+    # store current values to state file
+    cat <<EOF >"$statefile"
+prev_buf_physical_reads="${buf_physical_reads}"
+prev_buf_db_block_gets="${buf_db_block_gets}"
+prev_buf_consistent_gets="${buf_consistent_gets}"
+prev_lib_pins="${lib_pins}"
+prev_lib_reloads="${lib_reloads}"
+prev_dict_gets="${dict_gets}"
+prev_dict_getmisses="${dict_getmisses}"
 EOF
 }
 
